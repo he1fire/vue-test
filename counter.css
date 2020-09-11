@@ -59,7 +59,13 @@
   bottom: 5px;
   right: 5px;
 }
-
+#Show_Score{
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  top: 5px;
+  left: 5px;
+}
 .circle{
   background-color:red;
   width:15px;
@@ -80,6 +86,11 @@
   width:5px;
   height:5px;
   border-radius:50%;
+}
+.circle_button{
+  background-color:black;
+  width:25px;
+  height:5px;
 }
 .riichi_stick{
   visibility: hidden;
@@ -162,6 +173,28 @@
   margin: auto;
 }
 
+.container_button{
+  display: grid;
+  width:35px;
+  height:35px;
+  grid-template-rows: repeat(7, 5px);
+  grid-template-columns: 5px 25px 5px;
+  grid-template-areas: 
+  ". . ."
+  ". _1 ."
+  ". . ."
+  ". _2 ."
+  ". . ."
+  ". _3 ."
+  ". . ."
+  ;
+  vertical-align: middle;
+  text-align: center;
+  border: 3px solid black ;
+  border-radius:5px;
+  margin: auto;
+}
+
 .wind{
   grid-area: wind;
   margin: auto;
@@ -175,6 +208,7 @@
 .change{
   grid-area: change;
   width: 0px;
+  visibility: hidden;
   font-size: 30px;
   padding-top: 30px;
   text-align: left;
