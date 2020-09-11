@@ -3,131 +3,322 @@
   -webkit-text-size-adjust:none;
 }
 #DownPerson{
-  /* text-align: center;
-  font-size: 90px;
-  position: fixed;
-  bottom: 0px;
-  left: 0;
-  right: 0; */
-  background-color: gainsboro;
   position: fixed;
   text-align: center;
   vertical-align: bottom;
   bottom: 0;
   right: 50%;
-  margin: 0 -10vw 0 0;
-  transform: translate(0px,0);
+  margin: 0 -240px 0 0;
+  transform: translate(0px,-5px);
 }
 #RightPerson{
-  background-color: gainsboro;
   position: fixed;
   text-align: center;
   vertical-align: bottom;
-  font-size: 90px;
   top: 50%;
   right: 0;
-  margin: -117px 0 0 0;
+  margin: -110px 0 0 0;
   -ms-transform: rotate(270deg);
   -webkit-transform: rotate(270deg);
-  transform: rotate(270deg) translate(0,30px);
+  transform: rotate(270deg) translate(0,128px);
 }
 #UpPerson{
-  /* text-align: center;
-  font-size: 90px;
-  position: fixed;
-  top: 0px;
-  left: 0;
-  right: 0;
-  transform: rotate(180deg); */
-  background-color: gainsboro;
   position: fixed;
   text-align: center;
   vertical-align: bottom;
-  font-size: 90px;
-  height: 152px;
   top: 0;
   right: 50%;
-  margin: 0 -200px 0 0;
+  margin: 0 -140px 0 0;
   -ms-transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
-  transform: rotate(180deg) translate(0px,0);;
+  transform: rotate(180deg) translate(0px,-5px);
 }
 #LeftPerson{
-  background-color: gainsboro;
   position: fixed;
   text-align: center;
   vertical-align: bottom;
-  font-size: 90px;
-  height: 152px;
   top: 50%;
   left: 0;
-  margin: -76px 0 0 0;
+  margin: -10px 0 0 0;
   -ms-transform: rotate(90deg);
   -webkit-transform: rotate(90deg);
-  transform: rotate(90deg) translate(0,125px);
+  transform: rotate(90deg) translate(0,128px);
 }
+#Mid{
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#Roll_Dice{
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  bottom: 5px;
+  right: 5px;
+}
+
 .circle{
   background-color:red;
-  width:1.5vw;
-  height:1.5vw;
+  width:15px;
+  height:15px;
   border-radius:50%;
-  margin: 5px auto 5px auto;
+  margin: 3px auto 3px auto;
 }
+.blackcircle{
+  display: inline-block;
+  background-color:black;
+  width:3px;
+  height:3px;
+  border-radius:50%;
+  margin: 3px 0px auto 0px;
+}
+.circle_dice{
+  background-color:black;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+}
+.riichi_stick{
+  visibility: hidden;
+  border: 1px solid black;
+  grid-area: stick;
+  transform: translate(0,20px);
+}
+.riichi_stick_mini{
+  border: 1px solid black;
+  width: 50px;
+  height: 10px;
+  transform: rotate(-50deg) translate(-52px,-10px);
+}
+
 .container{
   display: grid;
   grid-template-rows: repeat(3, auto);
   grid-template-columns: repeat(3, auto);
   grid-template-areas: 
-    "richii richii"
-    "wind name"
-    "wind score";
-    vertical-align: middle;
-    text-align: center;
+    "stick stick ."
+    "wind score change";
+  vertical-align: middle;
+  text-align: center;
 }
-.richii{
-  border: 0.2vw solid black;
-  grid-column-start: 1; 
-  grid-column-end: 3; 
-  grid-row-start: 1; 
-  grid-row-end: 1;
+.container_mid{
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  grid-template-columns: repeat(3, 150px);
+  grid-template-areas: 
+    "now now ron"
+    "now now tsumo"
+    "riichi renjang ryuukyoku";
+  vertical-align: middle;
+  text-align: center;
 }
+.container_choose{
+  display: grid;
+  grid-template-rows: repeat(5, auto);
+  grid-template-columns: repeat(3, 100px);
+  grid-template-areas: 
+    "explain explain explain"
+    ". upcheck ."
+    "leftcheck . rightcheck"
+    ". downcheck ."
+    "ok ok ok";
+  vertical-align: middle;
+  text-align: center;
+}
+
+.container_roll{
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(5, 100px);
+  grid-template-areas:
+    "dice_1 plus dice_2 equal sum"
+    "roll roll roll roll roll";
+  vertical-align: middle;
+  text-align: center;
+  margin: 20px;
+}
+.container_dice{
+  display: grid;
+  width:35px;
+  height:35px;
+  grid-template-rows: repeat(7, 5px);
+  grid-template-columns: repeat(7, 5px);
+  grid-template-areas: 
+  ". . . . . . ."
+  ". _1 . . . _2 ."
+  ". . . . . . ."
+  ". _3 . _4 . _5 ."
+  ". . . . . . ."
+  ". _6 . . . _7 ."
+  ". . . . . . ."
+  ;
+  vertical-align: middle;
+  text-align: center;
+  border: 3px solid black ;
+  border-radius:5px;
+  margin: auto;
+}
+
 .wind{
-  border: 1px dashed gray;
-  grid-column-start: 1; 
-  grid-column-end: 2; 
-  grid-row-start: 2; 
-  grid-row-end: 4;
+  grid-area: wind;
   margin: auto;
-  font-size: 8vw;
-}
-.name{
-  border: 1px dashed gray;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  grid-row-start: 2;
-  grid-row-end: 3;
-  margin: auto;
-  font-size: 8vw;
+  font-size: 80px;
 }
 .score{
-  border: 1px dashed gray;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  grid-row-start: 3;
-  grid-row-end: 4;
+  grid-area: score;
+  width: 200px;
   margin: auto;
 }
-.no_drag{
+.change{
+  grid-area: change;
+  width: 100px;
+  font-size: 30px;
+  padding-top: 30px;
+  text-align: left;
+  transform: translate(-60px,-15px);
+}
+.now{
+  grid-area: now;
+  font-size: 70px;
+}
+.riichi{
+  grid-area: riichi;
+  margin: 0 auto 0 auto;
+  font-size: 0px;
+  transform: translate(20px,-10px);
+}
+.renjang{
+  grid-area: renjang;
+  margin: auto;
+  font-size: 0px;
+  transform: translate(20px,-10px);
+}
+.ron{
+  grid-area: ron;
+  font-size: 40px;
+}
+.tsumo{
+  grid-area: tsumo;
+  font-size: 40px;
+}
+.ryuukyoku{
+  grid-area: ryuukyoku;
+  font-size: 40px;
+}
+
+.explain{
+  grid-area: explain;
+  font-size: 20px;
+}
+.downcheck{
+  grid-area: downcheck;
+  font-size: 70px;
+  color: black;
+}
+.rightcheck{
+  grid-area: rightcheck;
+  font-size: 70px;
+  color: black;
+}
+.upcheck{
+  grid-area: upcheck;
+  font-size: 70px;
+  color: black;
+}
+.leftcheck{
+  grid-area: leftcheck;
+  font-size: 70px;
+  color: black;
+}
+.ok{
+  grid-area: ok;
+  font-size: 20px;
+}
+
+.dice_1{
+  grid-area: dice_1;
+}
+.dice_2{
+  grid-area: dice_2;
+}
+.plus{
+  grid-area: plus;
+  font-size: 80px;
+}
+.equal{
+  grid-area: equal;
+  font-size: 80px;
+}
+.sum{
+  grid-area: sum;
+  font-size: 80px;
+}
+.roll{
+  grid-area: roll;
+  font-size: 40px;
+}
+
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+.modal_content {
+  background-color: #ffffff;
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: auto;
+  padding: 5px;
+  z-index: 2;
+}
+
+html, body{
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  font-family: 'Noto Serif KR', serif;
+  /* 드래그방지 */
   -ms-user-select: none; 
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
   -webkit-user-select: none;
   user-select: none;
 }
-html, body{
-  overflow: hidden;
-  position: relative;
-  height: 100%;
-  width: 100%;
-  font-family: serif;
+select {
+  background-color: white;
+  font-size: 40px;
+  border: 0px solid black;
+  border-radius: 0px;
+}
+option{
+  font-size: 20px;
+  border: 0px solid black;
+  border-radius: 0px;
+}
+@media (orientation: portrait) {
+	html {
+		transform: rotate(-90deg);
+		transform-origin: top left;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 100vh;
+    height: 100vw;
+	}
 }
