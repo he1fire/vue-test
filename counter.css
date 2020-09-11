@@ -8,7 +8,7 @@
   vertical-align: bottom;
   bottom: 0;
   right: 50%;
-  margin: 0 -240px 0 0;
+  margin: 0 -150px 0 0;
   transform: translate(0px,-5px);
 }
 #RightPerson{
@@ -17,10 +17,10 @@
   vertical-align: bottom;
   top: 50%;
   right: 0;
-  margin: -110px 0 0 0;
+  margin: -65px 0 0 0;
   -ms-transform: rotate(270deg);
   -webkit-transform: rotate(270deg);
-  transform: rotate(270deg) translate(0,128px);
+  transform: rotate(270deg) translate(0,83px);
 }
 #UpPerson{
   position: fixed;
@@ -39,10 +39,10 @@
   vertical-align: bottom;
   top: 50%;
   left: 0;
-  margin: -10px 0 0 0;
+  margin: -55px 0 0 0;
   -ms-transform: rotate(90deg);
   -webkit-transform: rotate(90deg);
-  transform: rotate(90deg) translate(0,128px);
+  transform: rotate(90deg) translate(0,83px);
 }
 #Mid{
   position: fixed;
@@ -174,11 +174,11 @@
 }
 .change{
   grid-area: change;
-  width: 100px;
+  width: 10px;
   font-size: 30px;
   padding-top: 30px;
   text-align: left;
-  transform: translate(-60px,-15px);
+  transform: translate(-30px,-15px);
 }
 .now{
   grid-area: now;
