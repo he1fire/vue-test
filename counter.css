@@ -59,7 +59,7 @@
   bottom: 5px;
   right: 5px;
 }
-#Show_Score{
+#Show_Record{
   position: fixed;
   text-align: center;
   vertical-align: bottom;
@@ -142,11 +142,13 @@
 
 .container_roll{
   display: grid;
-  grid-template-rows: repeat(2, auto);
-  grid-template-columns: repeat(5, 100px);
+  grid-template-rows: 15px 82px 15px auto;
+  grid-template-columns: repeat(4, 82px) 15px 82px 15px;
   grid-template-areas:
-    "dice_1 plus dice_2 equal sum"
-    "roll roll roll roll roll";
+    ". . . . . updice ."
+    "dice_1 plus dice_2 equal leftdice sum rightdice"
+    ". . . . . downdice ."
+    "roll roll roll roll roll roll roll";
   vertical-align: middle;
   text-align: center;
   margin: 20px;
@@ -173,7 +175,7 @@
   margin: auto;
 }
 
-.container_button{
+.container_record{
   display: grid;
   width:35px;
   height:35px;
@@ -193,6 +195,16 @@
   border: 3px solid black ;
   border-radius:5px;
   margin: auto;
+}
+.container_table{
+  display: grid;
+  grid-template-rows: 50px 200px;
+  grid-template-columns: 120px repeat(4, 100px);
+  grid-template-areas: 
+  ". downname rightname upname leftname"
+  "when downrecord rightrecord uprecord leftrecord";
+  vertical-align: middle;
+  text-align: center;
 }
 
 .wind{
@@ -271,30 +283,52 @@
   grid-area: ok;
   font-size: 20px;
 }
-
-.dice_1{
-  grid-area: dice_1;
-}
-.dice_2{
-  grid-area: dice_2;
-}
 .plus{
   grid-area: plus;
-  font-size: 80px;
+  font-size: 50px;
+  line-height: 82px;
+  vertical-align: middle;
 }
 .equal{
   grid-area: equal;
-  font-size: 80px;
+  font-size: 50px;
+  line-height: 82px;
+  vertical-align: middle;
 }
 .sum{
   grid-area: sum;
-  font-size: 80px;
+  font-size: 50px;
+  line-height: 82px;
+  vertical-align: middle;
+}
+.downdice{
+  grid-area: downdice;
+  font-size: 15px;
+  line-height: 15px;
+  vertical-align: middle;
+}
+.rightdice{
+  grid-area: rightdice;
+  font-size: 15px;
+  line-height: 82px;
+  vertical-align: middle;
+}
+.updice{
+  grid-area: updice;
+  font-size: 15px;
+  line-height: 15px;
+  vertical-align: middle;
+}
+.leftdice{
+  grid-area: leftdice;
+  font-size: 15px;
+  line-height: 82px;
+  vertical-align: middle;
 }
 .roll{
   grid-area: roll;
   font-size: 40px;
 }
-
 
 .modal {
   display: none;

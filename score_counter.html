@@ -121,11 +121,11 @@
     </div>
   </div>
   <!-- 기록버튼 -->
-  <div id="Show_Score">
-    <div class="container_button" id="openscore">
-      <div style="grid-area: _1;"><div class="circle_button" style="background-color: black;"></div></div>
-      <div style="grid-area: _2;"><div class="circle_button" style="background-color: black;"></div></div>
-      <div style="grid-area: _3;"><div class="circle_button" style="background-color: black;"></div></div>
+  <div id="Show_Record" onclick="record();">
+    <div class="container_record" id="openrecord">
+      <div class="circle_button" style="grid-area: _1;"></div>
+      <div class="circle_button" style="grid-area: _2;"></div>
+      <div class="circle_button" style="grid-area: _3;"></div>
     </div>
   </div>
 
@@ -356,9 +356,9 @@
   ">
     <div class="modal_content">
       <div class="container_roll">
-        <div class="dice_1 container_dice" style="transform: scale(2);" id="dice1" >
+        <div class="container_dice" style="grid-area: dice_1; transform: scale(2);" id="dice1" >
         </div>
-        <div class="dice_2 container_dice" style="transform: scale(2);" id="dice2">
+        <div class="container_dice" style="grid-area: dice_2; transform: scale(2);" id="dice2">
         </div>
         <div class="plus">
           +
@@ -371,6 +371,56 @@
         </div>
         <div class="roll" onclick="roll();">
           굴리기
+        </div>
+        <div class="downdice">
+          ▼
+        </div>
+        <div class="rightdice">
+          ▶
+        </div>
+        <div class="updice">
+          ▲
+        </div>
+        <div class="leftdice">
+          ◀
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="Modal_record" onclick="
+  if (event.target==this){
+    this.style.display='';
+  }
+  ">
+    <div class="modal_content">
+      <div class="container_table" style="overflow: auto;">
+        <div style="grid-area: downname; font-size: 30px;">
+          ▼
+        </div>
+        <div style="grid-area: rightname; font-size: 30px;">
+          ▶
+        </div>
+        <div style="grid-area: upname; font-size: 30px;">
+          ▲
+        </div>
+        <div style="grid-area: leftname; font-size: 30px;">
+          ◀
+        </div>
+        <div style="grid-area: when; font-size: 20px;" id="when">
+          시작점수
+        </div>
+        <div style="grid-area: downrecord; font-size: 20px;" id="DownPerson_Scorerecord">
+          25000
+        </div>
+        <div style="grid-area: rightrecord; font-size: 20px;" id="RightPerson_Scorerecord">
+          25000
+        </div>
+        <div style="grid-area: uprecord; font-size: 20px;" id="UpPerson_Scorerecord">
+          25000
+        </div>
+        <div style="grid-area: leftrecord; font-size: 20px;" id="LeftPerson_Scorerecord">
+          25000
         </div>
       </div>
     </div>
