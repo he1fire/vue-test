@@ -9,7 +9,7 @@
   bottom: 0;
   right: 50%;
   margin: 0 -140px 0 0;
-  transform: translate(0px,-5px);
+  transform: translate(0px,5px);
 }
 #RightPerson{
   position: fixed;
@@ -31,7 +31,7 @@
   margin: 0 -140px 0 0;
   -ms-transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
-  transform: rotate(180deg) translate(0px,-5px);
+  transform: rotate(180deg) translate(0px,5px);
 }
 #LeftPerson{
   position: fixed;
@@ -59,7 +59,7 @@
   bottom: 5px;
   right: 5px;
 }
-#Show_Record{
+#Show_Option{
   position: fixed;
   text-align: center;
   vertical-align: bottom;
@@ -128,14 +128,24 @@
 }
 .container_choose{
   display: grid;
-  grid-template-rows: repeat(5, auto);
+  grid-template-rows: auto repeat(3, 100px);
   grid-template-columns: repeat(3, 100px);
   grid-template-areas: 
     "explain explain explain"
     ". upcheck ."
-    "leftcheck . rightcheck"
-    ". downcheck ."
-    "ok ok ok";
+    "leftcheck ok rightcheck"
+    ". downcheck .";
+  vertical-align: middle;
+  text-align: center;
+}
+.container_showscore{
+  display: grid;
+  grid-template-rows: repeat(3, 100px);
+  grid-template-columns: repeat(3, 100px);
+  grid-template-areas:
+    ". upscore ."
+    "leftscore ok rightscore"
+    ". downscore .";
   vertical-align: middle;
   text-align: center;
 }
@@ -145,13 +155,13 @@
   grid-template-rows: 15px 82px 15px auto;
   grid-template-columns: repeat(4, 82px) 15px 82px 15px;
   grid-template-areas:
-    ". . . . . updice ."
+    "dice_1 plus dice_2 equal . updice ."
     "dice_1 plus dice_2 equal leftdice sum rightdice"
-    ". . . . . downdice ."
+    "dice_1 plus dice_2 equal . downdice ."
     "roll roll roll roll roll roll roll";
   vertical-align: middle;
   text-align: center;
-  margin: 20px;
+  margin: 5px;
 }
 .container_dice{
   display: grid;
@@ -175,7 +185,7 @@
   margin: auto;
 }
 
-.container_record{
+.container_option{
   display: grid;
   width:35px;
   height:35px;
@@ -196,13 +206,28 @@
   border-radius:5px;
   margin: auto;
 }
-.container_table{
+
+.container_record{
   display: grid;
-  grid-template-rows: 50px 200px;
+  grid-template-rows: 35px 200px;
   grid-template-columns: 120px repeat(4, 100px);
   grid-template-areas: 
   ". downname rightname upname leftname"
   "when downrecord rightrecord uprecord leftrecord";
+  vertical-align: middle;
+  text-align: center;
+}
+
+.container_modify{
+  display: grid;
+  grid-template-rows: repeat(5, auto);
+  grid-template-columns: repeat(4, auto);
+  grid-template-areas:
+  "name name name name"
+  "name0 name1 name2 name3"
+  "score score score score"
+  "score0 score1 score2 score3"
+  "ok ok ok ok";
   vertical-align: middle;
   text-align: center;
 }
@@ -281,18 +306,19 @@
 }
 .ok{
   grid-area: ok;
-  font-size: 20px;
+  font-size: 60px;
+  line-height: 100px;
 }
 .plus{
   grid-area: plus;
   font-size: 50px;
-  line-height: 82px;
+  line-height: 112px;
   vertical-align: middle;
 }
 .equal{
   grid-area: equal;
   font-size: 50px;
-  line-height: 82px;
+  line-height: 112px;
   vertical-align: middle;
 }
 .sum{
@@ -303,31 +329,72 @@
 }
 .downdice{
   grid-area: downdice;
+  visibility: hidden;
   font-size: 15px;
   line-height: 15px;
   vertical-align: middle;
+  color: red;
 }
 .rightdice{
   grid-area: rightdice;
+  visibility: hidden;
   font-size: 15px;
   line-height: 82px;
   vertical-align: middle;
+  color: red;
 }
 .updice{
   grid-area: updice;
+  visibility: hidden;
   font-size: 15px;
   line-height: 15px;
   vertical-align: middle;
+  color: red;
 }
 .leftdice{
   grid-area: leftdice;
+  visibility: hidden;
   font-size: 15px;
   line-height: 82px;
   vertical-align: middle;
+  color: red;
 }
 .roll{
   grid-area: roll;
   font-size: 40px;
+}
+
+.downscore{
+  grid-area: downscore;
+  font-size: 30px;
+  line-height: 100px;
+  vertical-align: middle;
+  text-align: center;
+  transform: rotate(0deg);
+}
+.rightscore{
+  grid-area: rightscore;
+  font-size: 30px;
+  line-height: 100px;
+  vertical-align: middle;
+  text-align: center;
+  transform: rotate(270deg);
+}
+.upscore{
+  grid-area: upscore;
+  font-size: 30px;
+  line-height: 100px;
+  vertical-align: middle;
+  text-align: center;
+  transform: rotate(180deg);
+}
+.leftscore{
+  grid-area: leftscore;
+  font-size: 30px;
+  line-height: 100px;
+  vertical-align: middle;
+  text-align: center;
+  transform: rotate(90deg);
 }
 
 .modal {
@@ -373,11 +440,27 @@ select {
   font-size: 40px;
   border: 0px solid black;
   border-radius: 0px;
+  width: 160px;
+  font-family: 'Noto Serif KR', serif;
 }
 option{
   font-size: 20px;
   border: 0px solid black;
   border-radius: 0px;
+  font-family: 'Noto Serif KR', serif;
+}
+input[type='text'], input[type='number']{
+  font-size: 15px;
+  width: 100px;
+  font-family: 'Noto Serif KR', serif;
+  text-align: center;
+}
+
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 @media (orientation: portrait) {
 	html {
