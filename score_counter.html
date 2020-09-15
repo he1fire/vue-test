@@ -11,15 +11,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 </head>
 
-<body onclick="openFullScreenMode();" onmouseup="hidegap();">
+<body onclick="openFullScreenMode();" onmouseup="hidegap();" touchend="idegap();">
   <div id="Gap_mode" style="display: none;">0</div>
+  <script>
+    window.onload = function () {
+      var aa=document.querySelector('#DownPerson_Wind');
+      aa.addEventListener('touchstart',
+      function (){
+        var who='DownPerson';
+        var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+        var chk=document.querySelector('#Gap_mode');
+        for (var i=0;i<4;i++){
+            document.querySelector(scores[i]+'gap').innerText=document.querySelector(scores[i]).innerText;
+        }
+        var comparescore=document.querySelector('#'+who+'_Scoregap').innerText;
+        for (var i=0;i<4;i++){
+            document.querySelector(scores[i]).innerText-=comparescore;
+        }
+        chk.innerText=1;
+      }
+      ,false);
+      
+    }
+    
+  </script>
   <!-- 아래쪽 -->
   <div class="container" id="DownPerson">
     <div class="riichi_stick" id="DownPerson_Riichi">
       <div class="circle"></div>
     </div>
-    <div class="wind" onmousedown="showgap('DownPerson');">
-      <span style="color: red;" id="DownPerson_Wind">東</span>
+    <div class="wind">
+      <span style="color: red;" id="DownPerson_Wind">
+        東
+      </span>
     </div>
     <div class="score" onclick="riichi('DownPerson');">
       <span id="DownPerson_Score" style="font-size: 80px;">250</span><span id="DownPerson_Score00" style="font-size: 50px;">00</span>
