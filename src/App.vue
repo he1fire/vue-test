@@ -2,7 +2,7 @@
 export default {
   data(){
     return {
-      who: ["DownPerson", "RightPerson", "UpPerson", "LeftPerson"],
+      seats: ["Down", "Right", "Up", "Left"],
       winds: ["東", "南", "西", "北"],
       scores: [250, 250, 250, 250],
       scores_low: ["00", "00", "00", "00"],
@@ -11,11 +11,33 @@ export default {
       riichi: [false, false, false, false],
     };
   },
+  methods: {
+    activeRiichi(x){
+      if (this.riichi[x]===false){
+        this.scores[x]-=10;
+        this.riichi[x]=true;
+      }
+      else{
+        this.scores[x]+=10;
+        this.riichi[x]=false;
+      }
+    },
+  }
 };
 </script>
 
 <template>
-<Player div v-for="(a,i) in who" :key="i" :who=who[i] :wind=winds[i] :score=scores[i] :score_low=scores_low[i] :score_change=scores_change[i] :riichi=riichi[i] />
+<Player
+  v-for="(_, i) in seats"
+  :key="i"
+  :seat="seats[i]"
+  :wind="winds[i]"
+  :score="scores[i]"
+  :score_low="scores_low[i]"
+  :score_change="scores_change[i]"
+  :riichi="riichi[i]"
+  @click="activeRiichi(i)"
+/>
 </template>
 
 <style>

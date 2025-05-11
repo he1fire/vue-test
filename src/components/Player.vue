@@ -1,19 +1,38 @@
 <script>
 export default {
-  props:["who", "wind", "score", "score_low", "score_change", "riichi"],
+  props: {
+    seat: String,
+    wind: String,
+    score: Number,
+    score_low: String,
+    score_change: Number,
+    riichi: Boolean
+  },
   data(){
     return {
     };
   },
+  methods: {
+    isEast() {
+      return {
+        color: this.wind === '東' ? 'red' : ''
+      };
+    },
+    isRiichi() {
+      return {
+        visibility: this.riichi === true ? 'visible' : 'hidden'
+      };
+    }
+  }
 };
 </script>
 
 <template>
-<div class="container" :id=who>
-  <div class="riichi_stick" id="DownPerson_Riichi">
+<div class="container" :id=seat>
+  <div class="stick" :style=isRiichi()>
     <div class="circle"></div>
   </div>
-  <div class="wind" :style="{ color: who === 'DownPerson' ? 'red' : '' }">
+  <div class="wind" :style=isEast()>
     <span>{{wind}}</span>
   </div>
   <div class="score">
@@ -27,19 +46,13 @@ export default {
 </template>
 
 <style scoped>
-#DownPerson{
-  position: fixed;
-  text-align: center;
-  vertical-align: bottom;
+#Down{
   bottom: 0;
   right: 50%;
   margin: 0 -140px 0 0;
   transform: translate(0px,5px);
 }
-#RightPerson{
-  position: fixed;
-  text-align: center;
-  vertical-align: bottom;
+#Right{
   top: 50%;
   right: 0;
   margin: -70px 0 0 0;
@@ -47,10 +60,7 @@ export default {
   -webkit-transform: rotate(270deg);
   transform: rotate(270deg) translate(0,78px);
 }
-#UpPerson{
-  position: fixed;
-  text-align: center;
-  vertical-align: bottom;
+#Up{
   top: 0;
   right: 50%;
   margin: 0 -140px 0 0;
@@ -58,10 +68,7 @@ export default {
   -webkit-transform: rotate(180deg);
   transform: rotate(180deg) translate(0px,5px);
 }
-#LeftPerson{
-  position: fixed;
-  text-align: center;
-  vertical-align: bottom;
+#Left{
   top: 50%;
   left: 0;
   margin: -70px 0 0 0;
@@ -71,18 +78,18 @@ export default {
 }
 .container{
   display: grid;
-  grid-template-rows: repeat(3, auto);
+  grid-template-rows: repeat(2, auto);
   grid-template-columns: repeat(3, auto);
   grid-template-areas: 
     "stick stick ."
     "wind score change";
-  vertical-align: middle;
+  position: fixed;
   text-align: center;
 }
-.riichi_stick{
+.stick{
+  grid-area: stick;
   visibility: hidden;
   border: 1px solid black;
-  grid-area: stick;
   transform: translate(0,20px);
 }
 .circle{
