@@ -13,17 +13,17 @@ export default {
   <div class="riichi_stick" id="DownPerson_Riichi">
     <div class="circle"></div>
   </div>
-  <div class="wind">
-    <span id="DownPerson_Wind">{{wind}}</span>
+  <div class="wind" :style="{ color: who === 'DownPerson' ? 'red' : '' }">
+    <span>{{wind}}</span>
   </div>
   <div class="score">
-    <span id="DownPerson_Score" style="font-size: 80px;">{{score}}</span><span id="DownPerson_Score00" style="font-size: 50px;">{{score_low}}</span>
+    <span style="font-size: 80px;">{{score}}</span>
+    <span style="font-size: 50px;">{{score_low}}</span>
   </div>
-  <div id="DownPerson_Scorechange" class="change">
-    {{score_change}}
+  <div class="change">
+    <span>{{score_change}}</span>
   </div>
-  <div id="DownPerson_Scoregap" style="display: none;">0</div>
-  </div>
+</div>
 </template>
 
 <style scoped>
