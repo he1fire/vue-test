@@ -1,5 +1,7 @@
 import { createApp } from 'vue'
-import './style.css'
 import App from './App.vue'
+import Player from './components/Player.vue'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+app.component('Player', Player)
+app.mount('#app')
