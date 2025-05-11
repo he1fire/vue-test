@@ -14,28 +14,27 @@ export default {
   },
   methods: {
     isEast() {
-      return {
-        color: this.wind === '東' ? 'red' : ''
-      };
+      return {color: this.wind === '東' ? 'red' : ''};
     },
     isRiichi() {
-      return {
-        visibility: this.riichi === true ? 'visible' : 'hidden'
-      };
-    }
+      return {visibility: this.riichi === true ? 'visible' : 'hidden'};
+    },
+    activeRiichi(){
+      this.$emit('activeRiichi', this.seat);
+    },
   }
 };
 </script>
 
 <template>
 <div class="container" :id=seat>
-  <div class="stick" :style=isRiichi()>
+  <div class="stick" :style="isRiichi()">
     <div class="circle"></div>
   </div>
-  <div class="wind" :style=isEast()>
+  <div class="wind" :style="isEast()">
     <span>{{wind}}</span>
   </div>
-  <div class="score">
+  <div class="score" @click="activeRiichi">
     <span style="font-size: 80px;">{{score}}</span>
     <span style="font-size: 50px;">{{score_low}}</span>
   </div>

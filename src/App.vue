@@ -12,14 +12,21 @@ export default {
     };
   },
   methods: {
-    activeRiichi(x){
-      if (this.riichi[x]===false){
-        this.scores[x]-=10;
-        this.riichi[x]=true;
+    searchSeat(seat){
+      for (let i=0;i<4;i++){
+        if (this.seats[i]===seat)
+          return i;
+      }
+    },
+    activeRiichi(seat){
+      let idx=this.searchSeat(seat);
+      if (this.riichi[idx]===false){
+        this.scores[idx]-=10;
+        this.riichi[idx]=true;
       }
       else{
-        this.scores[x]+=10;
-        this.riichi[x]=false;
+        this.scores[idx]+=10;
+        this.riichi[idx]=false;
       }
     },
   }
@@ -36,7 +43,7 @@ export default {
   :score_low="scores_low[i]"
   :score_change="scores_change[i]"
   :riichi="riichi[i]"
-  @click="activeRiichi(i)"
+  @activeRiichi="activeRiichi"
 />
 </template>
 
