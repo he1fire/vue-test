@@ -6,13 +6,14 @@ export default {
     cnt_riichi: Number,
     cnt_renjang: Number,
   },
+  emits: ['showModal'],
   data(){
     return {
     };
   },
   methods: {
-    showRyuukyokuModal(){
-      this.$emit('showModal', "Ryuukyoku");
+    showModal(x){
+      this.$emit('showModal', x);
     },
   }
 };
@@ -54,7 +55,7 @@ export default {
   <div class="tsumo"><!-- 쯔모함수 추가 -->
     쯔모
   </div>
-  <div class="ryuukyoku" @click="showRyuukyokuModal"><!-- 유국함수 추가 -->
+  <div class="ryuukyoku" @click="showModal('Ryuukyoku')"><!-- 유국함수 추가 -->
     유국
   </div>
 </div>

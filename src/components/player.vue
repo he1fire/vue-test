@@ -8,16 +8,17 @@ export default {
     score_change: Number,
     riichi: Boolean
   },
+  emits: ['activeRiichi'],
   data(){
     return {
     };
   },
   methods: {
     isEast() {
-      return {color: this.wind === '東' ? 'red' : ''};
+      return {color: this.wind==='東' ? 'red' : ''};
     },
     isRiichi() {
-      return {visibility: this.riichi === true ? 'visible' : 'hidden'};
+      return {visibility: this.riichi===true ? 'visible' : 'hidden'};
     },
     activeRiichi(){
       this.$emit('activeRiichi', this.seat);

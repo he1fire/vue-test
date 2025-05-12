@@ -23,7 +23,8 @@ export default {
       cnt_renjang: 0,
       opt_minusriichi: false,
       opt_roundmangan: false,
-      RyuukyokuModal: false
+      modal: false,
+      modal_contents: ""
     };
   },
   methods: {
@@ -36,7 +37,7 @@ export default {
           this.cnt_riichi++;
         }
         else{
-          //modal 창 활성화후 점수가 없다고 알려주기
+          this.showModal('점수가 모자라 리치를 걸 수 없습니다.');
         }
       }
       else{ // 리치 비활성화
@@ -46,12 +47,12 @@ export default {
       }
     },
     showModal(x){
-      if (x==="Ryuukyoku")
-        this.RyuukyokuModal=true;
+      this.modal_contents=x;
+      this.modal=true;
     },
-    hideModal(x){
-      if (x==="Ryuukyoku")
-        this.RyuukyokuModal=false;
+    hideModal(){
+      this.modal_contents='';
+      this.modal=false;
     }
   }
 };
@@ -77,7 +78,8 @@ export default {
   @showModal="showModal"
 />
 <Modal
-  v-if="RyuukyokuModal"
+  v-if="modal"
+  :modal_contents="modal_contents"
   @hideModal="hideModal"
 />
 </template>

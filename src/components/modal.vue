@@ -1,30 +1,35 @@
 <script>
 export default {
   props: {
+    modal_contents: String
   },
+  emits: ['hideModal'],
   data(){
     return {
     };
   },
   methods: {
-    hideRyuukyokuModal(){
-      this.$emit('hideModal', "Ryuukyoku");
+    hideModal(){
+      this.$emit('hideModal');
     },
   }
 };
 </script>
 
 <template>
-  <div class="modal" @click="hideRyuukyokuModal">
-    <div class="modal_content">
-      <div style="font-size: 40px; margin: 20px;"><!-- 일반유국함수 추가 -->
-        일반유국
-      </div>
-      <div style="font-size: 40px; margin: 20px;"><!-- 특수유국함수 추가 -->
-        특수유국
-      </div>
+<div class="modal" @click="hideModal">
+  <div v-if="this.modal_contents==='Ryuukyoku'" class="modal_content" @click.stop>
+    <div style="font-size: 40px; margin: 20px;"><!-- 일반유국함수 추가 -->
+      일반유국
+    </div>
+    <div style="font-size: 40px; margin: 20px;"><!-- 특수유국함수 추가 -->
+      특수유국
     </div>
   </div>
+  <div v-else class="modal_content" @click.stop>
+    <div class="modal_text">{{ modal_contents }}</div>
+  </div>
+</div>
 </template>
 
 <style scoped>
@@ -50,5 +55,9 @@ export default {
   height: auto;
   padding: 5px;
   z-index: 2;
+}
+.modal_text{
+  font-size: 20px;
+  margin: 20px;
 }
 </style>
