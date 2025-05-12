@@ -93,6 +93,7 @@ export default {
 </script>
 
 <template>
+<!-- 각 방향별 player 컴포넌트 생성 -->
 <Player
   v-for="(_, i) in seats"
   :key="i"
@@ -104,6 +105,7 @@ export default {
   :riichi="riichi[i]"
   @toggleActiveRiichi="toggleActiveRiichi"
 />
+<!-- 중앙 panel 컴포넌트 생성 -->
 <Panel
   :now_wind
   :now_round
@@ -111,6 +113,7 @@ export default {
   :cnt_renjang
   @showModal="showModal"
 />
+<!-- modal 컴포넌트 생성 -->
 <Modal
   v-if="modal"
   :modal_contents

@@ -31,15 +31,19 @@ export default {
 
 <template>
 <div class="container" :id=seat>
+  <!-- 리치봉 -->
   <div class="stick" :style="isRiichi()">
     <div class="circle"></div>
   </div>
+  <!-- 현재 바람 -->
   <div class="wind" :style="isEast()"><!-- 점수비교함수 추가 -->
     {{ wind }}
   </div>
+  <!-- 현재 점수 -->
   <div class="score" @click="toggleActiveRiichi">
     {{ score }}<span style="font-size: 50px;">{{ score_low }}</span>
   </div>
+  <!-- 변경되는 점수 -->
   <div class="change">
     {{ score_change }}
   </div>

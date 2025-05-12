@@ -21,9 +21,11 @@ export default {
 
 <template>
 <div class="container_mid" id='Mid'>
+  <!-- 현재 라운드 -->
   <div class="now">
     {{ now_wind }} {{ now_round }} 局
   </div>
+  <!-- 현재 총 리치봉 -->
   <div class="riichi">
     <div class="riichi_stick_mini">
       <div class="circle" style="width:5px; height:5px;"></div>
@@ -32,6 +34,7 @@ export default {
       x {{ cnt_riichi }}
     </div>
   </div>
+  <!-- 현재 연장봉 -->
   <div class="renjang">
     <div class="riichi_stick_mini">
       <div class="blackcircle" style="margin: auto 0px 5px 0px;visibility: hidden;"></div>
@@ -49,12 +52,15 @@ export default {
       x {{ cnt_renjang }}
     </div>
   </div>
+  <!-- 론 버튼 -->
   <div class="ron"><!-- 론함수 추가 -->
     론
   </div>
+  <!-- 쯔모 버튼 -->
   <div class="tsumo"><!-- 쯔모함수 추가 -->
     쯔모
   </div>
+  <!-- 유국 버튼 -->
   <div class="ryuukyoku" @click="showModal('choose_draw')"><!-- 유국함수 추가 -->
     유국
   </div>

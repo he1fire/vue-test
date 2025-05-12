@@ -25,35 +25,36 @@ export default {
 
 <template>
 <div class="modal" @click="hideModal">
+  <!-- 유국 종류 선택창 -->
   <div v-if="this.modal_contents==='choose_draw'" class="modal_content">
     <div class="modal_choose_draw" @click.stop><!-- 일반유국함수 추가 -->
       일반유국
     </div>
-    <div class="modal_choose_draw" @click.stop="showModal('show_score', 'special_draw', [0, 0, 0, 0])"><!-- 특수유국함수 추가 -->
+    <div class="modal_choose_draw" @click.stop="showModal('show_score', 'special_draw', [0, 0, 0, 0])">
       특수유국
     </div>
   </div>
-  <div v-else-if="this.modal_contents==='show_score'" class="modal_content">
-    <div class="modal_content" style="border-radius:50%;">
-      <div class="container_showscore" @click.stop>
-        <div class="down_showscore">
-          {{ scores_change[0] }}
-        </div>
-        <div class="right_showscore">
-          {{ scores_change[1] }}
-        </div>
-        <div class="up_showscore">
-          {{ scores_change[2] }}
-        </div>
-        <div class="left_showscore">
-          {{ scores_change[3] }}
-        </div>
-        <div class="ok" @click.stop="saveRound()">
-          OK
-        </div>
+  <!-- 특수유국 확인창 -->
+  <div v-else-if="this.modal_contents==='show_score'" class="modal_content" style="border-radius:50%;">
+    <div class="container_showscore" @click.stop>
+      <div class="down_showscore">
+        {{ scores_change[0] }}
+      </div>
+      <div class="right_showscore">
+        {{ scores_change[1] }}
+      </div>
+      <div class="up_showscore">
+        {{ scores_change[2] }}
+      </div>
+      <div class="left_showscore">
+        {{ scores_change[3] }}
+      </div>
+      <div class="ok" @click.stop="saveRound()">
+        OK
       </div>
     </div>
   </div>
+  <!-- 메시지 팝업창 -->
   <div v-else class="modal_content" @click.stop>
     <div class="modal_text">{{ modal_contents }}</div>
   </div>
