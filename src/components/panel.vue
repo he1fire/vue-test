@@ -68,11 +68,14 @@ export default {
 </template>
 
 <style scoped>
+/* 정보창 위치*/
 #Mid{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+/* 정보창 */
 .container_mid{
   display: grid;
   grid-template-rows: repeat(3, auto);
@@ -108,6 +111,8 @@ export default {
 .ryuukyoku{
   grid-area: ryuukyoku;
 }
+
+/* 리치봉, 연장봉 그림 */
 .riichi_stick_mini{
   border: 1px solid black;
   width: 50px;

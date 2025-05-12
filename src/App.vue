@@ -125,6 +125,7 @@ export default {
 </template>
 
 <style>
+/* 전체 설정 */
 *{
   margin: 0;
   -webkit-text-size-adjust:none;

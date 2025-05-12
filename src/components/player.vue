@@ -30,7 +30,7 @@ export default {
 </script>
 
 <template>
-<div class="container" :id=seat>
+<div class="container_player" :id=seat>
   <!-- 리치봉 -->
   <div class="stick" :style="isRiichi()">
     <div class="circle"></div>
@@ -51,6 +51,7 @@ export default {
 </template>
 
 <style scoped>
+/* 플레이어창 위치*/
 #Down{
   bottom: 0;
   right: 50%;
@@ -81,7 +82,8 @@ export default {
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg) translate(0,78px);
 }
-.container{
+/* 플레이어창 */
+.container_player{
   display: grid;
   grid-template-rows: repeat(2, auto);
   grid-template-columns: repeat(3, auto);
@@ -117,6 +119,8 @@ export default {
   text-align: left;
   transform: translate(-30px,-15px);
 }
+
+/* 리치봉 그림 */
 .circle{
   background-color:red;
   width:15px;

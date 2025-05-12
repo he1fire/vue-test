@@ -27,26 +27,49 @@ export default {
 <div class="modal" @click="hideModal">
   <!-- 유국 종류 선택창 -->
   <div v-if="this.modal_contents==='choose_draw'" class="modal_content">
-    <div class="modal_choose_draw" @click.stop><!-- 일반유국함수 추가 -->
+    <div class="modal_choose_draw" @click.stop="showModal('check_player')">
       일반유국
     </div>
     <div class="modal_choose_draw" @click.stop="showModal('show_score', 'special_draw', [0, 0, 0, 0])">
       특수유국
     </div>
   </div>
-  <!-- 특수유국 확인창 -->
+  <!-- 일반유국 텐파이 선택창 -->
+  <div v-else-if="this.modal_contents==='check_player'" class="modal_content">
+    <div class="container_check" @click.stop>
+      <div class="guide_message">
+        텐파이인 사람을 선택해주세요.
+      </div>
+      <div class="down_check"><!-- 셀프 클릭 체크 함수 설정-->
+        ▼
+      </div>
+      <div class="right_check"><!-- 셀프 클릭 체크 함수 설정-->
+        ▶
+      </div>
+      <div class="up_check"><!-- 셀프 클릭 체크 함수 설정-->
+        ▲
+      </div>
+      <div class="left_check"><!-- 셀프 클릭 체크 함수 설정-->
+        ◀
+      </div>
+      <div class="ok"><!-- 텐파이 계산 함수 설정-->
+        OK
+      </div>
+    </div>
+  </div>
+  <!-- 점수 확인창 -->
   <div v-else-if="this.modal_contents==='show_score'" class="modal_content" style="border-radius:50%;">
-    <div class="container_showscore" @click.stop>
-      <div class="down_showscore">
+    <div class="container_show_score_diff" @click.stop>
+      <div class="down_score_diff">
         {{ scores_change[0] }}
       </div>
-      <div class="right_showscore">
+      <div class="right_score_diff">
         {{ scores_change[1] }}
       </div>
-      <div class="up_showscore">
+      <div class="up_score_diff">
         {{ scores_change[2] }}
       </div>
-      <div class="left_showscore">
+      <div class="left_score_diff">
         {{ scores_change[3] }}
       </div>
       <div class="ok" @click.stop="saveRound()">
@@ -62,6 +85,7 @@ export default {
 </template>
 
 <style scoped>
+/* 기본 모달창 */
 .modal {
   position: fixed;
   z-index: 2;
@@ -85,41 +109,76 @@ export default {
   padding: 5px;
   z-index: 2;
 }
+
+/* 유국 선택창 */
 .modal_choose_draw{
   font-size: 40px;
   margin: 20px;
 }
+
+/* 메시지 팝업창 */
 .modal_text{
   font-size: 20px;
   margin: 20px;
 }
 
-.container_showscore{
+/* 체크창 */
+.container_check{
+  display: grid;
+  grid-template-rows: auto repeat(3, 100px);
+  grid-template-columns: repeat(3, 100px);
+  grid-template-areas: 
+    "guide_message guide_message guide_message"
+    ". up_check ."
+    "left_check ok right_check"
+    ". down_check .";
+  text-align: center;
+  font-size: 70px;
+}
+.guide_message{
+  grid-area: guide_message;
+  font-size: 20px;
+}
+.down_check{
+  grid-area: down_check;
+}
+.right_check{
+  grid-area: right_check;
+}
+.up_check{
+  grid-area: up_check;
+}
+.left_check{
+  grid-area: left_check;
+}
+
+/* 점수 확인창 */
+.container_show_score_diff{
   display: grid;
   grid-template-rows: repeat(3, 100px);
   grid-template-columns: repeat(3, 100px);
   grid-template-areas:
-    ". up_showscore ."
-    "left_showscore ok right_showscore"
-    ". down_showscore .";
+    ". up_score_diff ."
+    "left_score_diff ok right_score_diff"
+    ". down_score_diff .";
   text-align: center;
   line-height: 100px;
   font-size: 30px;
 }
-.down_showscore{
-  grid-area: down_showscore;
+.down_score_diff{
+  grid-area: down_score_diff;
   transform: rotate(0deg);
 }
-.right_showscore{
-  grid-area: right_showscore;
+.right_score_diff{
+  grid-area: right_score_diff;
   transform: rotate(270deg);
 }
-.up_showscore{
-  grid-area: up_showscore;
+.up_score_diff{
+  grid-area: up_score_diff;
   transform: rotate(180deg);
 }
-.left_showscore{
-  grid-area: left_showscore;
+.left_score_diff{
+  grid-area: left_score_diff;
   transform: rotate(90deg);
 }
 .ok{
