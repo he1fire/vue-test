@@ -12,8 +12,8 @@ export default {
     };
   },
   methods: {
-    showModal(x){
-      this.$emit('showModal', x);
+    showModal(x, status, change=[]){
+      this.$emit('showModal', x, status, change);
     },
   }
 };
@@ -55,7 +55,7 @@ export default {
   <div class="tsumo"><!-- 쯔모함수 추가 -->
     쯔모
   </div>
-  <div class="ryuukyoku" @click="showModal('Ryuukyoku')"><!-- 유국함수 추가 -->
+  <div class="ryuukyoku" @click="showModal('choose_draw')"><!-- 유국함수 추가 -->
     유국
   </div>
 </div>

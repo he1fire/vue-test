@@ -21,6 +21,7 @@ export default {
       now_round: 1,
       cnt_riichi: 0,
       cnt_renjang: 0,
+      round_status: "",
       opt_minusriichi: false,
       opt_roundmangan: false,
       modal: false,
@@ -28,7 +29,8 @@ export default {
     };
   },
   methods: {
-    activeRiichi(seat){ // 해당 위치의 리치 활성화/비활성화
+    /**해당 위치의 리치 활성화/비활성화*/
+    toggleActiveRiichi(seat){
       let idx=this.seats.indexOf(seat); // 위치 기준 인덱스 반환
       if (this.riichi[idx]===false){ //  리치 활성화
         if (this.scores[idx]>=10 || this.opt_minusriichi){ // 1000점 이상 있거나 음수리치가 가능하다면
@@ -36,7 +38,7 @@ export default {
           this.riichi[idx]=true;
           this.cnt_riichi++;
         }
-        else{
+        else{ // 리치를 걸수 없을 때
           this.showModal('점수가 모자라 리치를 걸 수 없습니다.');
         }
       }
@@ -46,13 +48,45 @@ export default {
         this.cnt_riichi--;
       }
     },
-    showModal(x){
+    /**모달 창 켜기*/
+    showModal(x, status, scores_change=[]){
       this.modal_contents=x;
+      this.round_status=status;
+      this.scores_change=scores_change;
       this.modal=true;
     },
+    /**모달 창 끄기*/
     hideModal(){
       this.modal_contents='';
+      this.round_status='';
+      this.scores_change=[0,0,0,0];
       this.modal=false;
+    },
+    /**국 결과값 처리*/
+    saveRound(){
+      this.hideModal(); // 모달 창 끄기
+      for (let i=0;i<4;i++) // 리치봉 수거
+        this.riichi[i]=false;
+      // 옵션에서 롤백한 경우 처리
+      for (let i=0;i<4;i++){ // 점수 배분및 기록
+        if (this.scores_change[i]!==0){
+          // 점수가 변했다면 점수변동 및 이펙트 출력
+        }
+        // 점수 기록창에 점수 기록
+      }
+      // 점수 기록창에 국+본장 기록
+      if (this.round_status==='win'){ // 화료로 끝났다면
+        // 친이 화료했는지 확인하고 아니라면 자리바꾸기
+        // 친이 화료했다면 연장봉 추가하고 아니라면 연장봉 초기화
+        this.cnt_riichi=0; // 리치봉 초기화
+      }
+      else if (this.round_status==='normal_draw'){ // 일반유국이라면
+        // 친이 텐파이인지 확인하고 아니라면 자리바꾸기
+        this.cnt_renjang++; // 연장봉 추가
+      }
+      else if (this.round_status==='special_draw'){ // 특수유국이라면
+        this.cnt_renjang++; // 연장봉 추가
+      }
     }
   }
 };
@@ -68,7 +102,7 @@ export default {
   :score_low="scores_low[i]"
   :score_change="scores_change[i]"
   :riichi="riichi[i]"
-  @activeRiichi="activeRiichi"
+  @toggleActiveRiichi="toggleActiveRiichi"
 />
 <Panel
   :now_wind
@@ -79,8 +113,11 @@ export default {
 />
 <Modal
   v-if="modal"
-  :modal_contents="modal_contents"
+  :modal_contents
+  :scores_change
+  @showModal="showModal"
   @hideModal="hideModal"
+  @saveRound="saveRound"
 />
 </template>
 

@@ -1,9 +1,17 @@
-# Vue 3 + Vite
-
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
-
-
 ## Adress
 https://he1fire.github.io/vue-test
+---
+## To do
+- [x] 컴포넌트 배치
+- [x] 리치 구현
+- [ ] 일반유국 구현
+- [x] 특수유국 구현
+- [ ] 론 구현
+- [ ] 쯔모 구현
+- [ ] 주사위 구현
+- [ ] 게임시작 자리정하기 구현
+- [ ] 점수 기록 구현
+- [ ] 점수 수정 구현
+- [ ] 게임 옵션 구현
+- [ ] 점수 차 비교 구현
+- [ ] 론 및 쯔모 화료로 통합

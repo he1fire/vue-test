@@ -8,20 +8,22 @@ export default {
     score_change: Number,
     riichi: Boolean
   },
-  emits: ['activeRiichi'],
+  emits: ['toggleActiveRiichi'],
   data(){
     return {
     };
   },
   methods: {
+    /**본인 바람이 동이라면 붉은색으로 표시*/
     isEast() {
       return {color: this.wind==='東' ? 'red' : ''};
     },
+    /**리치봉 표시*/
     isRiichi() {
       return {visibility: this.riichi===true ? 'visible' : 'hidden'};
     },
-    activeRiichi(){
-      this.$emit('activeRiichi', this.seat);
+    toggleActiveRiichi(){
+      this.$emit('toggleActiveRiichi', this.seat);
     },
   }
 };
@@ -35,7 +37,7 @@ export default {
   <div class="wind" :style="isEast()"><!-- 점수비교함수 추가 -->
     {{ wind }}
   </div>
-  <div class="score" @click="activeRiichi">
+  <div class="score" @click="toggleActiveRiichi">
     {{ score }}<span style="font-size: 50px;">{{ score_low }}</span>
   </div>
   <div class="change">
