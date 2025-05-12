@@ -1,5 +1,11 @@
 <script>
+import Player from './components/Player.vue'
+import Panel from './components/Panel.vue'
 export default {
+  components: {
+    Player,
+    Panel,
+  },
   data(){
     return {
       seats: ["Down", "Right", "Up", "Left"],
@@ -9,24 +15,37 @@ export default {
       scores_change: [0, 0, 0, 0],
       scores_gap: [0, 0, 0, 0],
       riichi: [false, false, false, false],
+      now_wind: "東",
+      now_round: 1,
+      cnt_riichi: 0,
+      cnt_renjang: 0,
+      opt_minusriichi: false,
+      opt_roundmangan: false,
     };
   },
   methods: {
-    searchSeat(seat){
+    searchSeat(seat){ // 위치 기준 인덱스 반환
       for (let i=0;i<4;i++){
         if (this.seats[i]===seat)
           return i;
       }
     },
-    activeRiichi(seat){
+    activeRiichi(seat){ // 해당 위치의 리치 활성화/비활성화
       let idx=this.searchSeat(seat);
-      if (this.riichi[idx]===false){
-        this.scores[idx]-=10;
-        this.riichi[idx]=true;
+      if (this.riichi[idx]===false){ //  리치 활성화
+        if (this.scores[idx]>=10 || this.opt_minusriichi){ // 1000점 이상 있거나 음수리치가 가능하다면
+          this.scores[idx]-=10;
+          this.riichi[idx]=true;
+          this.cnt_riichi++;
+        }
+        else{
+          //modal 창 활성화후 점수가 없다고 알려주기
+        }
       }
-      else{
+      else{ // 리치 비활성화
         this.scores[idx]+=10;
         this.riichi[idx]=false;
+        this.cnt_riichi--;
       }
     },
   }
@@ -44,6 +63,12 @@ export default {
   :score_change="scores_change[i]"
   :riichi="riichi[i]"
   @activeRiichi="activeRiichi"
+/>
+<panel
+  :now_wind
+  :now_round
+  :cnt_riichi
+  :cnt_renjang
 />
 </template>
 

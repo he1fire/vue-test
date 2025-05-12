@@ -31,15 +31,14 @@ export default {
   <div class="stick" :style="isRiichi()">
     <div class="circle"></div>
   </div>
-  <div class="wind" :style="isEast()">
-    <span>{{wind}}</span>
+  <div class="wind" :style="isEast()" onmousedown="showgap('DownPerson');">
+    {{ wind }}
   </div>
   <div class="score" @click="activeRiichi">
-    <span style="font-size: 80px;">{{score}}</span>
-    <span style="font-size: 50px;">{{score_low}}</span>
+    {{ score }}<span style="font-size: 50px;">{{ score_low }}</span>
   </div>
   <div class="change">
-    <span>{{score_change}}</span>
+    {{ score_change }}
   </div>
 </div>
 </template>
@@ -84,6 +83,7 @@ export default {
     "wind score change";
   position: fixed;
   text-align: center;
+  font-size: 80px;
 }
 .stick{
   grid-area: stick;
@@ -91,17 +91,9 @@ export default {
   border: 1px solid black;
   transform: translate(0,20px);
 }
-.circle{
-  background-color:red;
-  width:15px;
-  height:15px;
-  border-radius:50%;
-  margin: 3px auto 3px auto;
-}
 .wind{
   grid-area: wind;
   margin: auto;
-  font-size: 80px;
 }
 .score{
   grid-area: score;
@@ -117,5 +109,12 @@ export default {
   padding-top: 30px;
   text-align: left;
   transform: translate(-30px,-15px);
+}
+.circle{
+  background-color:red;
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  margin: 3px auto 3px auto;
 }
 </style>
