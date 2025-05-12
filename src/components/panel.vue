@@ -11,51 +11,53 @@ export default {
     };
   },
   methods: {
-
+    showRyuukyokuModal(){
+      this.$emit('showModal', "Ryuukyoku");
+    },
   }
 };
 </script>
 
 <template>
 <div class="container_mid" id='Mid'>
-    <div class="now">
-      {{ now_wind }} {{ now_round }} 局
+  <div class="now">
+    {{ now_wind }} {{ now_round }} 局
+  </div>
+  <div class="riichi">
+    <div class="riichi_stick_mini">
+      <div class="circle" style="width:5px; height:5px;"></div>
     </div>
-    <div class="riichi">
-      <div class="riichi_stick_mini">
-        <div class="circle" style="width:5px; height:5px;"></div>
-      </div>  
-      <div>
-        x {{ cnt_riichi }}
-      </div>
-    </div>
-    <div class="renjang">
-      <div class="riichi_stick_mini">
-        <div class="blackcircle" style="margin: auto 0px 5px 0px;visibility: hidden;"></div>
-        <div class="blackcircle"></div>
-        <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
-        <div class="blackcircle"></div>
-        <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
-        <div class="blackcircle"></div>
-        <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
-        <div class="blackcircle"></div>
-        <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
-        <div class="blackcircle" style="margin: 5px 0px auto 0px; visibility: hidden;"></div>
-      </div>
-      <div>
-        x {{ cnt_renjang }}
-      </div>
-    </div>
-    <div class="ron" onclick="ron1();">
-      론
-    </div>
-    <div class="tsumo" onclick="tsumo1();">
-      쯔모
-    </div>
-    <div class="ryuukyoku" onclick="ryuukyoku1();">
-      유국
+    <div>
+      x {{ cnt_riichi }}
     </div>
   </div>
+  <div class="renjang">
+    <div class="riichi_stick_mini">
+      <div class="blackcircle" style="margin: auto 0px 5px 0px;visibility: hidden;"></div>
+      <div class="blackcircle"></div>
+      <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
+      <div class="blackcircle"></div>
+      <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
+      <div class="blackcircle"></div>
+      <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
+      <div class="blackcircle"></div>
+      <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
+      <div class="blackcircle" style="margin: 5px 0px auto 0px; visibility: hidden;"></div>
+    </div>
+    <div>
+      x {{ cnt_renjang }}
+    </div>
+  </div>
+  <div class="ron"><!-- 론함수 추가 -->
+    론
+  </div>
+  <div class="tsumo"><!-- 쯔모함수 추가 -->
+    쯔모
+  </div>
+  <div class="ryuukyoku" @click="showRyuukyokuModal"><!-- 유국함수 추가 -->
+    유국
+  </div>
+</div>
 </template>
 
 <style scoped>

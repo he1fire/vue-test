@@ -31,7 +31,7 @@ export default {
   <div class="stick" :style="isRiichi()">
     <div class="circle"></div>
   </div>
-  <div class="wind" :style="isEast()" onmousedown="showgap('DownPerson');">
+  <div class="wind" :style="isEast()"><!-- 점수비교함수 추가 -->
     {{ wind }}
   </div>
   <div class="score" @click="activeRiichi">

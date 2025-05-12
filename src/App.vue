@@ -1,10 +1,12 @@
 <script>
-import Player from './components/Player.vue'
-import Panel from './components/Panel.vue'
+import Player from './components/player.vue'
+import Panel from './components/panel.vue'
+import Modal from './components/modal.vue'
 export default {
   components: {
     Player,
     Panel,
+    Modal
   },
   data(){
     return {
@@ -21,17 +23,12 @@ export default {
       cnt_renjang: 0,
       opt_minusriichi: false,
       opt_roundmangan: false,
+      RyuukyokuModal: false
     };
   },
   methods: {
-    searchSeat(seat){ // 위치 기준 인덱스 반환
-      for (let i=0;i<4;i++){
-        if (this.seats[i]===seat)
-          return i;
-      }
-    },
     activeRiichi(seat){ // 해당 위치의 리치 활성화/비활성화
-      let idx=this.searchSeat(seat);
+      let idx=this.seats.indexOf(seat); // 위치 기준 인덱스 반환
       if (this.riichi[idx]===false){ //  리치 활성화
         if (this.scores[idx]>=10 || this.opt_minusriichi){ // 1000점 이상 있거나 음수리치가 가능하다면
           this.scores[idx]-=10;
@@ -48,6 +45,14 @@ export default {
         this.cnt_riichi--;
       }
     },
+    showModal(x){
+      if (x==="Ryuukyoku")
+        this.RyuukyokuModal=true;
+    },
+    hideModal(x){
+      if (x==="Ryuukyoku")
+        this.RyuukyokuModal=false;
+    }
   }
 };
 </script>
@@ -64,18 +69,23 @@ export default {
   :riichi="riichi[i]"
   @activeRiichi="activeRiichi"
 />
-<panel
+<Panel
   :now_wind
   :now_round
   :cnt_riichi
   :cnt_renjang
+  @showModal="showModal"
+/>
+<Modal
+  v-if="RyuukyokuModal"
+  @hideModal="hideModal"
 />
 </template>
 
 <style>
 *{
   margin: 0;
-  -webkit-text-size-adjust:none  ;
+  -webkit-text-size-adjust:none;
 }
 html, body{
   overflow: hidden;
