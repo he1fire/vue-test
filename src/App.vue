@@ -64,7 +64,6 @@ export default {
     },
     /**국 결과값 처리*/
     saveRound(){
-      this.hideModal(); // 모달 창 끄기
       for (let i=0;i<4;i++) // 리치봉 수거
         this.riichi[i]=false;
       // 옵션에서 롤백한 경우 처리
@@ -87,6 +86,7 @@ export default {
       else if (this.round_status==='special_draw'){ // 특수유국이라면
         this.cnt_renjang++; // 연장봉 추가
       }
+      this.hideModal(); // 모달 창 끄기
     }
   }
 };
