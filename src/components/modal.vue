@@ -4,7 +4,7 @@ export default {
     scores_change: Array,
     tenpai: Array,
     round_status: String,
-    modal_contents: String,
+    modal_type: String,
   },
   emits: ['showModal', 'hideModal', 'toggleCheckTenpai', 'normalDraw', 'saveRound'],
   data(){
@@ -29,8 +29,8 @@ export default {
         return {color: ''};
     },
     /**모달 창 켜기*/
-    showModal(contents, status, changed=[]){
-      this.$emit('showModal', contents, status, changed);
+    showModal(type, status, changed=[]){
+      this.$emit('showModal', type, status, changed);
     },
     /**모달 창 끄기*/
     hideModal(){
@@ -55,7 +55,7 @@ export default {
 <template>
 <div class="modal" @click="hideModal">
   <!-- 유국 종류 선택창 -->
-  <div v-if="modal_contents==='choose_draw'" class="modal_content">
+  <div v-if="modal_type==='choose_draw'" class="modal_content">
     <div class="modal_choose_draw" @click.stop="showModal('check_player_tenpai')">
       일반유국
     </div>
@@ -64,7 +64,7 @@ export default {
     </div>
   </div>
   <!-- 일반유국 텐파이 선택창 -->
-  <div v-else-if="modal_contents==='check_player_tenpai'" class="modal_content">
+  <div v-else-if="modal_type==='check_player_tenpai'" class="modal_content">
     <div class="container_check" @click.stop>
       <div class="guide_message">
         텐파이인 사람을 선택해주세요.
@@ -83,7 +83,7 @@ export default {
     </div>
   </div>
   <!-- 점수 확인창 -->
-  <div v-else-if="modal_contents==='show_score'" class="modal_content" style="border-radius:50%;">
+  <div v-else-if="modal_type==='show_score'" class="modal_content" style="border-radius:50%;">
     <div class="container_show_score_diff" @click.stop>
       <div v-for="(_, i) in class_score_diff"
         :key="i"
@@ -99,7 +99,7 @@ export default {
   </div>
   <!-- 메시지 팝업창 -->
   <div v-else class="modal_content" @click.stop>
-    <div class="modal_text">{{ modal_contents }}</div>
+    <div class="modal_text">{{ modal_type }}</div>
   </div>
 </div>
 </template>

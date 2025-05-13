@@ -27,7 +27,7 @@ export default {
       opt_minusriichi: false,
       opt_roundmangan: false,
       modal: false,
-      modal_contents: "",
+      modal_type: "",
     };
   },
   methods: {
@@ -84,8 +84,8 @@ export default {
       }, 20); // 0.02초 * 50번 = 1초동안 실행
     },
     /**모달 창 켜기*/
-    showModal(contents, status, changed=[]){
-      this.modal_contents=contents;
+    showModal(type, status, changed=[]){
+      this.modal_type=type;
       this.round_status=status;
       for (let i=0;i<this.scores_change.length;i++)
         this.scores_change[i]=changed[i];
@@ -93,7 +93,7 @@ export default {
     },
     /**모달 창 끄기*/
     hideModal(){
-      this.modal_contents='';
+      this.modal_type='';
       this.round_status='';
       this.tenpai=[false, false, false, false];
       this.modal=false;
@@ -189,7 +189,7 @@ export default {
   :scores_change
   :tenpai
   :round_status
-  :modal_contents
+  :modal_type
   @showModal="showModal"
   @hideModal="hideModal"
   @toggleCheckTenpai="toggleCheckTenpai"
