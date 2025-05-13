@@ -4,6 +4,8 @@ export default {
     scores_change: Array,
     names: Array,
     winner: Number,
+    score_fan: Number,
+    score_bu: Number,
     win: Array,
     lose: Array,
     tenpai: Array,
@@ -33,6 +35,10 @@ export default {
       }
       else if (status==='tenpai')
         return {color: this.tenpai[x]===true ? 'red' : ''};
+      else if (status==='fan')
+        return {color: x===this.score_fan ? 'red' : ''};
+      else if (status==='bu')
+        return {color: x===this.score_bu ? 'red' : ''};
     },
     /**점수 변동에 따른 글자색*/
     isDiff(x) {
@@ -121,10 +127,12 @@ export default {
         판:
       </div>
       <div class="fan_check">
-        <span v-for="(k, i) in fan"
+        <span v-for="(_, i) in fan"
         :key="i"
+        :style="isChecked(i, 'fan')"
+        @click.stop="toggleCheckStatus(i, 'fan')"
         >
-          {{ k }}
+          {{ fan[i] }}
         </span>
         <div></div>
         <span>1배역만</span>
@@ -134,16 +142,20 @@ export default {
         부:
       </div>
       <div class="bu_check">
-        <span v-for="(k, i) in bu.slice(0, 6)"
+        <span v-for="(_, i) in bu.slice(0, 6)"
         :key="i"
+        :style="isChecked(i, 'bu')"
+        @click.stop="toggleCheckStatus(i, 'bu')"
         >
-          {{ k }}
+          {{ bu[i] }}
         </span>
         <div></div>
-        <span v-for="(k, i) in bu.slice(6)"
+        <span v-for="(_, i) in bu.slice(6)"
         :key="i"
+        :style="isChecked(i+6, 'bu')"
+        @click.stop="toggleCheckStatus(i+6, 'bu')"
         >
-          {{ k }}
+          {{ bu[i+6] }}
         </span>
       </div>
     </div>
@@ -157,7 +169,7 @@ export default {
       일반유국
     </div>
     <div class="modal_choose_draw" @click.stop="showModal('show_score', 'special_draw', [0, 0, 0, 0])">
-      특수유국
+      도중유국
     </div>
   </div>
   <!-- 텐파이 인원 선택창 -->
@@ -251,6 +263,8 @@ export default {
     ". down_check .";
   text-align: center;
   font-size: 70px;
+  align-items: center;
+  justify-items: center;
 }
 .guide_message{
   grid-area: guide_message;
@@ -279,6 +293,8 @@ export default {
   "bu bu_check";
   text-align: center;
   font-size: 30px;
+  align-items: center;
+  justify-items: center;
 }
 .fan{
   grid-area: fan;
@@ -310,6 +326,8 @@ export default {
   text-align: center;
   line-height: 100px;
   font-size: 30px;
+  align-items: center;
+  justify-items: center;
 }
 .down_score_diff{
   grid-area: down_score_diff;

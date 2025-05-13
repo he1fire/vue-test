@@ -19,6 +19,8 @@ export default {
       scores_gap: [0, 0, 0, 0], // 플레이어간 점수 차이
       names: ["▼", "▶", "▲", "◀"], // 플레이어별 이름
       winner: 0, // 현재 점수 입력하는 플레이어
+      score_fan: 0, // 현재 점수 (판)
+      score_bu: 0, // 현재 점수 (부)
       riichi: [false, false, false, false], // 플레이어별 리치 유무
       win: [false, false, false, false], // 플레이어별 화료 유무
       lose: [false, false, false, false], // 플레이어별 방총 유무
@@ -121,6 +123,10 @@ export default {
       }
       else if (status==='tenpai')
         this.tenpai[idx]=!this.tenpai[idx];
+      else if (status==='fan')
+        this.score_fan=idx;
+      else if (status==='bu')
+        this.score_bu=idx;
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(){
@@ -238,6 +244,8 @@ export default {
   :scores_change
   :names
   :winner
+  :score_fan
+  :score_bu
   :win
   :lose
   :tenpai
