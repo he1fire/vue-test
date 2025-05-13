@@ -13,7 +13,8 @@ export default {
       seats: ["Down", "Right", "Up", "Left"],
       winds: ["東", "南", "西", "北"],
       scores: [250, 250, 250, 250],
-      scores_low: ["00", "00", "00", "00"],
+      scores_low: [0, 0, 0, 0],
+      scores_effect: [false, false, false, false],
       scores_change: [0, 0, 0, 0],
       scores_gap: [0, 0, 0, 0],
       riichi: [false, false, false, false],
@@ -62,18 +63,38 @@ export default {
       this.now_wind=all_winds[Math.floor((cnt%16)/4)]; // 현재 바람 수정
       this.now_round=cnt%4+1; // 현재 라운드 수정
     },
+    /**점수 변동 효과*/
+    changeScores(idx){
+      let start_score=this.scores[idx]*100;
+      let arr=[];
+      for (let i=0;i<50;i++){ // 변경될 점수 사이를 50등분해서 저장
+        arr[i]=start_score+(this.scores_change[idx]/50)*(i+1);
+      }
+      this.scores_effect[idx]=true;
+      let timecnt=0;
+      let repeat=setInterval(() => { // 시간에 따라 반복
+        let x=Math.floor(arr[timecnt]/100), y=Math.abs(arr[timecnt]%100);
+        this.scores[idx]=x // 100의 자리 변경
+        this.scores_low[idx]=y // 10의자리 변경
+        timecnt++;
+        if (timecnt>=50){
+          clearInterval(repeat);
+          this.scores_effect[idx]=false;
+        }
+      }, 20); // 0.02초 * 50번 = 1초동안 실행
+    },
     /**모달 창 켜기*/
     showModal(contents, status, changed=[]){
       this.modal_contents=contents;
       this.round_status=status;
-      this.scores_change=changed;
+      for (let i=0;i<this.scores_change.length;i++)
+        this.scores_change[i]=changed[i];
       this.modal=true;
     },
     /**모달 창 끄기*/
     hideModal(){
       this.modal_contents='';
       this.round_status='';
-      this.scores_change=[0,0,0,0];
       this.tenpai=[false, false, false, false];
       this.modal=false;
     },
@@ -108,9 +129,8 @@ export default {
         this.riichi[i]=false;
       // 옵션에서 롤백한 경우 처리
       for (let i=0;i<this.seats.length;i++){ // 점수 배분및 기록
-        if (this.scores_change[i]!==0){
-          // 점수가 변했다면 점수변동 및 이펙트 출력
-        }
+        if (this.scores_change[i]!==0)
+          this.changeScores(i);
         // 점수 기록창에 점수 기록
       }
       // 점수 기록창에 국+본장 기록
@@ -149,6 +169,7 @@ export default {
   :wind="winds[i]"
   :score="scores[i]"
   :score_low="scores_low[i]"
+  :score_effect="scores_effect[i]"
   :score_change="scores_change[i]"
   :scores_gap="scores_gap[i]"
   :riichi="riichi[i]"

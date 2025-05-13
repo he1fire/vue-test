@@ -4,7 +4,8 @@ export default {
     seat: String,
     wind: String,
     score: Number,
-    score_low: String,
+    score_low: Number,
+    score_effect: Boolean,
     score_change: Number,
     score_gap: Number,
     riichi: Boolean,
@@ -22,6 +23,15 @@ export default {
     /**리치봉 표시*/
     isRiichi() {
       return {visibility: this.riichi===true ? 'visible' : 'hidden'};
+    },
+    /**점수 변동에 따른 글자색*/
+    isDiff() {
+      if (this.score_change>0)
+        return {color: 'limegreen'};
+      else if (this.score_change<0)
+        return {color: 'red'};
+      else
+        return {color: ''};
     },
     /**리치 활성화/비활성화*/
     toggleActiveRiichi(){
@@ -43,11 +53,11 @@ export default {
   </div>
   <!-- 현재 점수 -->
   <div class="score" @click="toggleActiveRiichi()">
-    {{ score }}<span style="font-size: 50px;">{{ score_low }}</span>
+    {{ score }}<span style="font-size: 50px;"><span v-if="this.score_low<10">0</span>{{ score_low }}</span>
   </div>
   <!-- 변경되는 점수 -->
-  <div class="change">
-    {{ score_change }}
+  <div v-show="score_effect===true" class="change" :style="isDiff()">
+    <span v-show="score_change>0">+</span>{{ score_change }}
   </div>
 </div>
 </template>
@@ -115,7 +125,6 @@ export default {
 .change{
   grid-area: change;
   width: 0px;
-  visibility: hidden;
   font-size: 30px;
   padding-top: 30px;
   text-align: left;

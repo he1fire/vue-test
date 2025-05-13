@@ -55,7 +55,7 @@ export default {
 <template>
 <div class="modal" @click="hideModal">
   <!-- 유국 종류 선택창 -->
-  <div v-if="this.modal_contents==='choose_draw'" class="modal_content">
+  <div v-if="modal_contents==='choose_draw'" class="modal_content">
     <div class="modal_choose_draw" @click.stop="showModal('check_player_tenpai')">
       일반유국
     </div>
@@ -64,7 +64,7 @@ export default {
     </div>
   </div>
   <!-- 일반유국 텐파이 선택창 -->
-  <div v-else-if="this.modal_contents==='check_player_tenpai'" class="modal_content">
+  <div v-else-if="modal_contents==='check_player_tenpai'" class="modal_content">
     <div class="container_check" @click.stop>
       <div class="guide_message">
         텐파이인 사람을 선택해주세요.
@@ -83,14 +83,14 @@ export default {
     </div>
   </div>
   <!-- 점수 확인창 -->
-  <div v-else-if="this.modal_contents==='show_score'" class="modal_content" style="border-radius:50%;">
+  <div v-else-if="modal_contents==='show_score'" class="modal_content" style="border-radius:50%;">
     <div class="container_show_score_diff" @click.stop>
       <div v-for="(_, i) in class_score_diff"
         :key="i"
         :class="class_score_diff[i]"
         :style="isDiff(i)"
       >
-        <span v-if="this.scores_change[i]>0">+</span>{{ scores_change[i] }}
+        <span v-show="scores_change[i]>0">+</span>{{ scores_change[i] }}
       </div>
       <div class="ok" @click.stop="saveRound()">
         OK
