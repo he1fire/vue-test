@@ -53,16 +53,16 @@ export default {
       x {{ cnt_renjang }}
     </div>
   </div>
-  <!-- 론 버튼 -->
-  <div class="ron"><!-- 론함수 추가 -->
-    론
+  <!-- 옵션 버튼 -->
+  <div class="option"><!-- 화료함수 추가 -->
+    옵션
   </div>
-  <!-- 쯔모 버튼 -->
-  <div class="tsumo"><!-- 쯔모함수 추가 -->
-    쯔모
+  <!-- 화료 버튼 -->
+  <div class="win" @click="showModal('check_player_win')"><!-- 화료함수 추가 -->
+    화료
   </div>
   <!-- 유국 버튼 -->
-  <div class="ryuukyoku" @click="showModal('choose_draw')"><!-- 유국함수 추가 -->
+  <div class="draw" @click="showModal('choose_draw_kind')">
     유국
   </div>
 </div>
@@ -82,9 +82,9 @@ export default {
   grid-template-rows: repeat(3, auto);
   grid-template-columns: repeat(3, 150px);
   grid-template-areas: 
-    "now now ron"
-    "now now tsumo"
-    "riichi renjang ryuukyoku";
+    "now now option"
+    "now now win"
+    "riichi renjang draw";
   position: fixed;
   text-align: center;
   font-size: 40px;
@@ -103,14 +103,14 @@ export default {
   margin: auto;
   transform: translate(20px,-10px);
 }
-.ron{
-  grid-area: ron;
+.option{
+  grid-area: option;
 }
-.tsumo{
-  grid-area: tsumo;
+.win{
+  grid-area: win;
 }
-.ryuukyoku{
-  grid-area: ryuukyoku;
+.draw{
+  grid-area: draw;
 }
 
 /* 리치봉, 연장봉 그림 */

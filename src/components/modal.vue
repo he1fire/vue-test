@@ -2,11 +2,13 @@
 export default {
   props: {
     scores_change: Array,
+    win: Array,
+    lose: Array,
     tenpai: Array,
     round_status: String,
     modal_type: String,
   },
-  emits: ['showModal', 'hideModal', 'toggleCheckTenpai', 'normalDraw', 'saveRound'],
+  emits: ['showModal', 'hideModal', 'toggleCheckWin', 'toggleCheckLose', 'toggleCheckTenpai', 'normalDraw', 'saveRound'],
   data(){
     return {
       class_check: ["down_check", "right_check", "up_check", "left_check"],
@@ -16,8 +18,13 @@ export default {
   },
   methods: {
     /**체크되었다면 붉은색으로 표시*/
-    isChecked(x) {
-      return {color: this.tenpai[x]===true ? 'red' : ''};
+    isChecked(x, status) {
+      if (status==='win')
+        return {color: this.win[x]===true ? 'red' : ''};
+      else if (status==='lose')
+        return {color: this.lose[x]===true ? 'red' : ''};
+      else if (status==='tenpai')
+        return {color: this.tenpai[x]===true ? 'red' : ''};
     },
     /**점수 변동에 따른 글자색*/
     isDiff(x) {
@@ -35,6 +42,14 @@ export default {
     /**모달 창 끄기*/
     hideModal(){
       this.$emit('hideModal');
+    },
+    /**화료 체크*/
+    toggleCheckWin(idx){
+      this.$emit('toggleCheckWin', idx);
+    },
+    /**방총 체크*/
+    toggleCheckLose(idx){
+      this.$emit('toggleCheckLose', idx);
     },
     /**텐파이 체크*/
     toggleCheckTenpai(idx){
@@ -54,8 +69,46 @@ export default {
 
 <template>
 <div class="modal" @click="hideModal">
+  <!-- 화료 인원 선택창 -->
+  <div v-if="modal_type==='check_player_win'" class="modal_content">
+    <div class="container_check" @click.stop>
+      <div class="guide_message">
+        화료한 사람을 선택해 주세요.
+      </div>
+      <div v-for="(_, i) in class_check"
+        :key="i"
+        :class="class_check[i]"
+        :style="isChecked(i, 'win')"
+        @click.stop="toggleCheckWin(i)"
+      >
+        {{ arrow_check[i] }}
+      </div>
+      <div class="ok" @click.stop="showModal('check_player_lose')">
+        OK
+      </div>
+    </div>
+  </div>
+  <!--방총 인원 선택창 -->
+  <div v-else-if="modal_type==='check_player_lose'" class="modal_content">
+    <div class="container_check" @click.stop>
+      <div class="guide_message">
+        방총당한 사람을 선택해 주세요.
+      </div>
+      <div v-for="(_, i) in class_check"
+        :key="i"
+        :class="class_check[i]"
+        :style="isChecked(i, 'lose')"
+        @click.stop="toggleCheckLose(i)"
+      >
+        {{ arrow_check[i] }}
+      </div>
+      <div class="ok"><!-- 화료 함수 연결 -->
+        OK
+      </div>
+    </div>
+  </div>
   <!-- 유국 종류 선택창 -->
-  <div v-if="modal_type==='choose_draw'" class="modal_content">
+  <div v-else-if="modal_type==='choose_draw_kind'" class="modal_content">
     <div class="modal_choose_draw" @click.stop="showModal('check_player_tenpai')">
       일반유국
     </div>
@@ -63,21 +116,21 @@ export default {
       특수유국
     </div>
   </div>
-  <!-- 일반유국 텐파이 선택창 -->
+  <!-- 텐파이 인원 선택창 -->
   <div v-else-if="modal_type==='check_player_tenpai'" class="modal_content">
     <div class="container_check" @click.stop>
       <div class="guide_message">
-        텐파이인 사람을 선택해주세요.
+        텐파이한 사람을 선택해 주세요.
       </div>
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="isChecked(i)"
+        :style="isChecked(i, 'tenpai')"
         @click.stop="toggleCheckTenpai(i)"
       >
         {{ arrow_check[i] }}
       </div>
-      <div class="ok" @click.stop="normalDraw()"><!-- 텐파이 계산 함수 설정-->
+      <div class="ok" @click.stop="normalDraw()">
         OK
       </div>
     </div>

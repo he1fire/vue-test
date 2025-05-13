@@ -10,24 +10,26 @@ export default {
   },
   data(){
     return {
-      seats: ["Down", "Right", "Up", "Left"],
-      winds: ["東", "南", "西", "北"],
-      scores: [250, 250, 250, 250],
-      scores_low: [0, 0, 0, 0],
-      scores_effect: [false, false, false, false],
-      scores_change: [0, 0, 0, 0],
-      scores_gap: [0, 0, 0, 0],
-      riichi: [false, false, false, false],
-      tenpai: [false, false, false, false],
-      now_wind: "東",
-      now_round: 1,
-      cnt_riichi: 0,
-      cnt_renjang: 0,
-      round_status: "",
-      opt_minusriichi: false,
-      opt_roundmangan: false,
-      modal: false,
-      modal_type: "",
+      seats: ["Down", "Right", "Up", "Left"], // 플레이어별 위치
+      winds: ["東", "南", "西", "北"], // 플레이어별 현재 자풍
+      scores: [250, 250, 250, 250], // 플레이어별 현재 점수 (100자리 이상)
+      scores_low: [0, 0, 0, 0], // 플레이어별 현재 점수 (100자리 이하)
+      scores_effect: [false, false, false, false], // 플레이어별 점수 변환 이펙트
+      scores_change: [0, 0, 0, 0], // 플레이어별 변동 점수
+      scores_gap: [0, 0, 0, 0], // 플레이어간 점수 차이
+      riichi: [false, false, false, false], // 플레이어별 리치 유무
+      win: [false, false, false, false], // 플레이어별 화료 유무
+      lose: [false, false, false, false], // 플레이어별 방총 유무
+      tenpai: [false, false, false, false], // 플레이어별 텐파이 유무
+      now_wind: "東", // 현재 장풍
+      now_round: 1, // 현재 국
+      cnt_riichi: 0, // 현재 누적 리치봉
+      cnt_renjang: 0, // 현재 누적 연장봉
+      round_status: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
+      opt_minusriichi: false, // 음수리치 옵션
+      opt_roundmangan: false, // 절상만관 옵션
+      modal: false, // 모달창 활성화
+      modal_type: "", // 모달창 종류
     };
   },
   methods: {
@@ -95,15 +97,22 @@ export default {
     hideModal(){
       this.modal_type='';
       this.round_status='';
+      this.win=[false, false, false, false];
+      this.lose=[false, false, false, false];
       this.tenpai=[false, false, false, false];
       this.modal=false;
     },
+    /**화료 체크*/
+    toggleCheckWin(idx){
+      this.win[idx]=!this.win[idx]
+    },
+    /**방총 체크*/
+    toggleCheckLose(idx){
+      this.lose[idx]=!this.lose[idx]
+    },
     /**텐파이 체크*/
     toggleCheckTenpai(idx){
-      if (this.tenpai[idx]===false)
-        this.tenpai[idx]=true;
-      else
-        this.tenpai[idx]=false;
+      this.tenpai[idx]=!this.tenpai[idx]
     },
     /**일반유국 점수계산*/
     normalDraw(){
@@ -113,12 +122,12 @@ export default {
         if (this.tenpai[i]===true) // 텐파이 인원 세기
           cnt_tenpai++;
       }
-      if (0<cnt_tenpai && cnt_tenpai<4){
+      if (0<cnt_tenpai && cnt_tenpai<4){ //올텐파이나 올노텐이 아니라면
         for (let i=0;i<this.seats.length;i++){
-          if (this.tenpai[i]===true)
-            changed[i]=3000/cnt_tenpai;
+          if (this.tenpai[i]===true) // 텐파이라면
+            changed[i]=3000/cnt_tenpai; // 3000 나눠서 획득
           else
-          changed[i]=-3000/(this.seats.length-cnt_tenpai);
+          changed[i]=-3000/(this.seats.length-cnt_tenpai); 
         }
       }
       this.showModal('show_score', 'normal_draw', changed);
@@ -187,11 +196,15 @@ export default {
 <modal
   v-if="modal"
   :scores_change
+  :win
+  :lose
   :tenpai
   :round_status
   :modal_type
   @showModal="showModal"
   @hideModal="hideModal"
+  @toggleCheckWin="toggleCheckWin"
+  @toggleCheckLose="toggleCheckLose"
   @toggleCheckTenpai="toggleCheckTenpai"
   @normalDraw="normalDraw"
   @saveRound="saveRound"
