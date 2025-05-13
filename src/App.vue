@@ -143,4 +143,17 @@ html, body{
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* 가로모드 활성화 */
+@media (orientation: portrait) {
+	html {
+		transform: rotate(-90deg);
+		transform-origin: top left;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 100vh;
+    height: 100vw;
+	}
+}
 </style>
