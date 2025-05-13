@@ -1,21 +1,50 @@
 <script>
 export default {
   props: {
-    modal_contents: String,
     scores_change: Array,
+    tenpai: Array,
+    round_status: String,
+    modal_contents: String,
   },
-  emits: ['showModal', 'hideModal', 'saveRound'],
+  emits: ['showModal', 'hideModal', 'toggleCheckTenpai', 'normalDraw', 'saveRound'],
   data(){
     return {
+      class_check: ["down_check", "right_check", "up_check", "left_check"],
+      arrow_check: ["▼", "▶", "▲", "◀"],
+      class_score_diff: ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"],
     };
   },
   methods: {
-    showModal(x, status, change=[]){
-      this.$emit('showModal', x, status, change);
+    /**체크되었다면 붉은색으로 표시*/
+    isChecked(x) {
+      return {color: this.tenpai[x]===true ? 'red' : ''};
     },
+    /**점수 변동에 따른 글자색*/
+    isDiff(x) {
+      if (this.scores_change[x]>0)
+        return {color: 'limegreen'};
+      else if (this.scores_change[x]<0)
+        return {color: 'red'};
+      else
+        return {color: ''};
+    },
+    /**모달 창 켜기*/
+    showModal(contents, status, changed=[]){
+      this.$emit('showModal', contents, status, changed);
+    },
+    /**모달 창 끄기*/
     hideModal(){
       this.$emit('hideModal');
     },
+    /**텐파이 체크*/
+    toggleCheckTenpai(idx){
+      this.$emit('toggleCheckTenpai', idx);
+    },
+    /**일반유국 점수계산*/
+    normalDraw(){
+      this.$emit('normalDraw');
+    },
+    /**국 결과값 처리*/
     saveRound(){
       this.$emit('saveRound');
     },
@@ -27,7 +56,7 @@ export default {
 <div class="modal" @click="hideModal">
   <!-- 유국 종류 선택창 -->
   <div v-if="this.modal_contents==='choose_draw'" class="modal_content">
-    <div class="modal_choose_draw" @click.stop="showModal('check_player')">
+    <div class="modal_choose_draw" @click.stop="showModal('check_player_tenpai')">
       일반유국
     </div>
     <div class="modal_choose_draw" @click.stop="showModal('show_score', 'special_draw', [0, 0, 0, 0])">
@@ -35,24 +64,20 @@ export default {
     </div>
   </div>
   <!-- 일반유국 텐파이 선택창 -->
-  <div v-else-if="this.modal_contents==='check_player'" class="modal_content">
+  <div v-else-if="this.modal_contents==='check_player_tenpai'" class="modal_content">
     <div class="container_check" @click.stop>
       <div class="guide_message">
         텐파이인 사람을 선택해주세요.
       </div>
-      <div class="down_check"><!-- 셀프 클릭 체크 함수 설정-->
-        ▼
+      <div v-for="(_, i) in class_check"
+        :key="i"
+        :class="class_check[i]"
+        :style="isChecked(i)"
+        @click.stop="toggleCheckTenpai(i)"
+      >
+        {{ arrow_check[i] }}
       </div>
-      <div class="right_check"><!-- 셀프 클릭 체크 함수 설정-->
-        ▶
-      </div>
-      <div class="up_check"><!-- 셀프 클릭 체크 함수 설정-->
-        ▲
-      </div>
-      <div class="left_check"><!-- 셀프 클릭 체크 함수 설정-->
-        ◀
-      </div>
-      <div class="ok"><!-- 텐파이 계산 함수 설정-->
+      <div class="ok" @click.stop="normalDraw()"><!-- 텐파이 계산 함수 설정-->
         OK
       </div>
     </div>
@@ -60,17 +85,12 @@ export default {
   <!-- 점수 확인창 -->
   <div v-else-if="this.modal_contents==='show_score'" class="modal_content" style="border-radius:50%;">
     <div class="container_show_score_diff" @click.stop>
-      <div class="down_score_diff">
-        {{ scores_change[0] }}
-      </div>
-      <div class="right_score_diff">
-        {{ scores_change[1] }}
-      </div>
-      <div class="up_score_diff">
-        {{ scores_change[2] }}
-      </div>
-      <div class="left_score_diff">
-        {{ scores_change[3] }}
+      <div v-for="(_, i) in class_score_diff"
+        :key="i"
+        :class="class_score_diff[i]"
+        :style="isDiff(i)"
+      >
+        <span v-if="this.scores_change[i]>0">+</span>{{ scores_change[i] }}
       </div>
       <div class="ok" @click.stop="saveRound()">
         OK

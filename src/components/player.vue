@@ -6,7 +6,8 @@ export default {
     score: Number,
     score_low: String,
     score_change: Number,
-    riichi: Boolean
+    score_gap: Number,
+    riichi: Boolean,
   },
   emits: ['toggleActiveRiichi'],
   data(){
@@ -22,6 +23,7 @@ export default {
     isRiichi() {
       return {visibility: this.riichi===true ? 'visible' : 'hidden'};
     },
+    /**리치 활성화/비활성화*/
     toggleActiveRiichi(){
       this.$emit('toggleActiveRiichi', this.seat);
     },
@@ -40,7 +42,7 @@ export default {
     {{ wind }}
   </div>
   <!-- 현재 점수 -->
-  <div class="score" @click="toggleActiveRiichi">
+  <div class="score" @click="toggleActiveRiichi()">
     {{ score }}<span style="font-size: 50px;">{{ score_low }}</span>
   </div>
   <!-- 변경되는 점수 -->
