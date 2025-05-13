@@ -17,6 +17,8 @@ export default {
       scores_effect: [false, false, false, false], // 플레이어별 점수 변환 이펙트
       scores_change: [0, 0, 0, 0], // 플레이어별 변동 점수
       scores_gap: [0, 0, 0, 0], // 플레이어간 점수 차이
+      names: ["▼", "▶", "▲", "◀"], // 플레이어별 이름
+      winner: 0, // 현재 점수 입력하는 플레이어
       riichi: [false, false, false, false], // 플레이어별 리치 유무
       win: [false, false, false, false], // 플레이어별 화료 유무
       lose: [false, false, false, false], // 플레이어별 방총 유무
@@ -120,7 +122,7 @@ export default {
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(){
-      let cnt_win=0;
+      let cnt_win=0, cnt_lose=0;
       for (let i=0;i<this.win.length;i++){
         if (this.win[i]===true && this.lose[i]===true){ // 화료와 동시에 방총 (불가능한 경우)
           this.showModal('화료한 사람과 방총당한 사람이 같습니다.');
@@ -128,16 +130,31 @@ export default {
         }
         if (this.win[i]===true) // 화료 인원 세기
           cnt_win++;
+        if (this.lose[i]===true) // 방총 인원 세기
+          cnt_lose++;
       }
-      if (cnt_win===0){
+      if (cnt_win===0){ // 화료한 사람이 없음 (불가능한 경우)
         this.showModal('화료한 사람이 선택되지 않았습니다.');
         return;
       }
-      else if (cnt_win===4){
+      else if (cnt_win===4){ // 화료한 사람이 4명임 (불가능한 경우)
         this.showModal('화료한 사람이 4명일 수 없습니다.');
         return;
       }
-      // 론/쯔모에 따라서 점수 입력 창으로 이동(다가화 포함)
+      else if (cnt_win!==1 && cnt_lose===0) { // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
+        this.showModal('쯔모한 사람이 2명 이상일 수 없습니다.');
+        return;
+      }
+      if (!cnt_lose){ // 쯔모
+        for (let i=0;i<this.win.length;i++){
+          if (this.win[i]===true)
+            this.winner=i;
+        }
+        this.showModal('check_score', 'tsumo');
+      }
+      else{ // 론
+
+      }
     },
     /**일반유국 점수계산*/
     normalDraw(){
@@ -168,7 +185,7 @@ export default {
         // 점수 기록창에 점수 기록
       }
       // 점수 기록창에 국+본장 기록
-      if (this.round_status==='win'){ // 화료로 끝났다면
+      if (this.round_status==='tsumo' || this.round_status==='ron'){ // 화료로 끝났다면
         // 친이 화료했는지 확인하고 아니라면 자리바꾸기
         // 친이 화료했다면 연장봉 추가하고 아니라면 연장봉 초기화
         this.cnt_riichi=0; // 리치봉 초기화
@@ -221,6 +238,8 @@ export default {
 <modal
   v-if="modal"
   :scores_change
+  :names
+  :winner
   :win
   :lose
   :tenpai

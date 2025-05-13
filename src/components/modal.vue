@@ -2,6 +2,8 @@
 export default {
   props: {
     scores_change: Array,
+    names: Array,
+    winner: Number,
     win: Array,
     lose: Array,
     tenpai: Array,
@@ -14,6 +16,8 @@ export default {
       class_check: ["down_check", "right_check", "up_check", "left_check"],
       arrow_check: ["▼", "▶", "▲", "◀"],
       class_score_diff: ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"],
+      fan: ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+"],
+      bu: [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110],
     };
   },
   methods: {
@@ -66,8 +70,8 @@ export default {
 <template>
 <div class="modal" @click="hideModal">
   <!-- 화료 인원 선택창 -->
-  <div v-if="modal_type==='check_player_win'" class="modal_content">
-    <div class="container_check" @click.stop>
+  <div v-if="modal_type==='check_player_win'" class="modal_content" @click.stop>
+    <div class="container_check">
       <div class="guide_message">
         화료한 사람을 선택해 주세요.
       </div>
@@ -85,8 +89,8 @@ export default {
     </div>
   </div>
   <!--방총 인원 선택창 -->
-  <div v-else-if="modal_type==='check_player_lose'" class="modal_content">
-    <div class="container_check" @click.stop>
+  <div v-else-if="modal_type==='check_player_lose'" class="modal_content" @click.stop>
+    <div class="container_check">
       <div class="guide_message">
         방총당한 사람을 선택해 주세요.
       </div>
@@ -103,8 +107,48 @@ export default {
       </div>
     </div>
   </div>
+  <!-- 판/부 선택창 -->
+  <div v-else-if="modal_type==='check_score'" class="modal_content" @click.stop>
+    <div>
+      {{ names[winner] }}의 점수를 입력해주세요.
+    </div>
+    <div class="container_check_fanbu">
+      <div class="fan">
+        판:
+      </div>
+      <div class="fan_check">
+        <span v-for="(k, i) in fan"
+        :key="i"
+        >
+          {{ k }}
+        </span>
+        <div></div>
+        <span>1배역만</span>
+        <!-- <span>(책임지불<span>X</span>)</span> -->
+      </div>
+      <div class="bu">
+        부:
+      </div>
+      <div class="bu_check">
+        <span v-for="(k, i) in bu.slice(0, 6)"
+        :key="i"
+        >
+          {{ k }}
+        </span>
+        <div></div>
+        <span v-for="(k, i) in bu.slice(6)"
+        :key="i"
+        >
+          {{ k }}
+        </span>
+      </div>
+    </div>
+    <div style="font-size: 30px;">
+      OK
+    </div>
+  </div>
   <!-- 유국 종류 선택창 -->
-  <div v-else-if="modal_type==='choose_draw_kind'" class="modal_content">
+  <div v-else-if="modal_type==='choose_draw_kind'" class="modal_content" @click.stop>
     <div class="modal_choose_draw" @click.stop="showModal('check_player_tenpai')">
       일반유국
     </div>
@@ -113,8 +157,8 @@ export default {
     </div>
   </div>
   <!-- 텐파이 인원 선택창 -->
-  <div v-else-if="modal_type==='check_player_tenpai'" class="modal_content">
-    <div class="container_check" @click.stop>
+  <div v-else-if="modal_type==='check_player_tenpai'" class="modal_content" @click.stop>
+    <div class="container_check">
       <div class="guide_message">
         텐파이한 사람을 선택해 주세요.
       </div>
@@ -132,8 +176,8 @@ export default {
     </div>
   </div>
   <!-- 점수 확인창 -->
-  <div v-else-if="modal_type==='show_score'" class="modal_content" style="border-radius:50%;">
-    <div class="container_show_score_diff" @click.stop>
+  <div v-else-if="modal_type==='show_score'" class="modal_content" style="border-radius:50%;" @click.stop>
+    <div class="container_show_score_diff">
       <div v-for="(_, i) in class_score_diff"
         :key="i"
         :class="class_score_diff[i]"
@@ -177,6 +221,7 @@ export default {
   height: auto;
   padding: 5px;
   z-index: 2;
+  font-size: 20px;
 }
 
 /* 유국 선택창 */
@@ -187,7 +232,6 @@ export default {
 
 /* 메시지 팝업창 */
 .modal_text{
-  font-size: 20px;
   margin: 20px;
 }
 
@@ -219,6 +263,35 @@ export default {
 }
 .left_check{
   grid-area: left_check;
+}
+
+/* 부/판 체크창*/
+.container_check_fanbu{
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: 60px auto;
+  grid-template-areas:
+  "fan fan_check"
+  "bu bu_check";
+  text-align: center;
+  font-size: 30px;
+}
+.fan{
+  grid-area: fan;
+}
+.bu{
+  grid-area: bu;
+}
+.fan_check{
+  grid-area: fan_check;
+}
+.bu_check{
+  grid-area: bu_check;
+}
+.fan_check span,
+.bu_check span {
+  padding-right: 5px;
+  padding-left: 5px;
 }
 
 /* 점수 확인창 */
