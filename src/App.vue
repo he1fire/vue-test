@@ -102,28 +102,53 @@ export default {
       this.tenpai=[false, false, false, false];
       this.modal=false;
     },
-    /**화료 체크*/
-    toggleCheckWin(idx){
-      this.win[idx]=!this.win[idx]
+    /**화료, 방총, 텐파이 체크*/
+    toggleCheckStatus(idx, status){
+      if (status==='win')
+        this.win[idx]=!this.win[idx];
+      else if (status==='lose'){
+        if (!this.lose[idx]){
+          for (let i=0;i<this.lose.length;i++){
+            if (i!==idx)
+              this.lose[i]=false;
+          }
+        }
+        this.lose[idx]=!this.lose[idx];
+      }
+      else if (status==='tenpai')
+        this.tenpai[idx]=!this.tenpai[idx];
     },
-    /**방총 체크*/
-    toggleCheckLose(idx){
-      this.lose[idx]=!this.lose[idx]
-    },
-    /**텐파이 체크*/
-    toggleCheckTenpai(idx){
-      this.tenpai[idx]=!this.tenpai[idx]
+    /**화료 및 방총 불가능한 경우 반환*/
+    checkInvalidStatus(){
+      let cnt_win=0;
+      for (let i=0;i<this.win.length;i++){
+        if (this.win[i]===true && this.lose[i]===true){ // 화료와 동시에 방총 (불가능한 경우)
+          this.showModal('화료한 사람과 방총당한 사람이 같습니다.');
+          return;
+        }
+        if (this.win[i]===true) // 화료 인원 세기
+          cnt_win++;
+      }
+      if (cnt_win===0){
+        this.showModal('화료한 사람이 선택되지 않았습니다.');
+        return;
+      }
+      else if (cnt_win===4){
+        this.showModal('화료한 사람이 4명일 수 없습니다.');
+        return;
+      }
+      // 론/쯔모에 따라서 점수 입력 창으로 이동(다가화 포함)
     },
     /**일반유국 점수계산*/
     normalDraw(){
       let cnt_tenpai=0; // 총 텐파이 인원
       let changed=[0, 0, 0, 0]; // 변경되는 점수
-      for (let i=0;i<this.seats.length;i++){
+      for (let i=0;i<this.tenpai.length;i++){
         if (this.tenpai[i]===true) // 텐파이 인원 세기
           cnt_tenpai++;
       }
       if (0<cnt_tenpai && cnt_tenpai<4){ //올텐파이나 올노텐이 아니라면
-        for (let i=0;i<this.seats.length;i++){
+        for (let i=0;i<this.tenpai.length;i++){
           if (this.tenpai[i]===true) // 텐파이라면
             changed[i]=3000/cnt_tenpai; // 3000 나눠서 획득
           else
@@ -134,10 +159,10 @@ export default {
     },
     /**국 결과값 처리*/
     saveRound(){
-      for (let i=0;i<this.seats.length;i++) // 리치봉 수거
+      for (let i=0;i<this.riichi.length;i++) // 리치봉 수거
         this.riichi[i]=false;
       // 옵션에서 롤백한 경우 처리
-      for (let i=0;i<this.seats.length;i++){ // 점수 배분및 기록
+      for (let i=0;i<this.scores_change.length;i++){ // 점수 배분및 기록
         if (this.scores_change[i]!==0)
           this.changeScores(i);
         // 점수 기록창에 점수 기록
@@ -150,7 +175,7 @@ export default {
       }
       else if (this.round_status==='normal_draw'){ // 일반유국이라면
         let chk_notenpai=false;
-        for (let i=0;i<this.seats.length;i++){
+        for (let i=0;i<this.winds.length;i++){
           if (this.winds[i]==='東' && this.tenpai[i]===false){ // 친이 노텐인지 체크
             chk_notenpai=true;
             break;
@@ -203,9 +228,8 @@ export default {
   :modal_type
   @showModal="showModal"
   @hideModal="hideModal"
-  @toggleCheckWin="toggleCheckWin"
-  @toggleCheckLose="toggleCheckLose"
-  @toggleCheckTenpai="toggleCheckTenpai"
+  @toggleCheckStatus="toggleCheckStatus"
+  @checkInvalidStatus="checkInvalidStatus"
   @normalDraw="normalDraw"
   @saveRound="saveRound"
 />

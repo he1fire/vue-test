@@ -8,7 +8,7 @@ export default {
     round_status: String,
     modal_type: String,
   },
-  emits: ['showModal', 'hideModal', 'toggleCheckWin', 'toggleCheckLose', 'toggleCheckTenpai', 'normalDraw', 'saveRound'],
+  emits: ['showModal', 'hideModal', 'toggleCheckStatus', 'checkInvalidStatus', 'normalDraw', 'saveRound'],
   data(){
     return {
       class_check: ["down_check", "right_check", "up_check", "left_check"],
@@ -43,17 +43,13 @@ export default {
     hideModal(){
       this.$emit('hideModal');
     },
-    /**화료 체크*/
-    toggleCheckWin(idx){
-      this.$emit('toggleCheckWin', idx);
+    /**화료, 방총, 텐파이 체크*/
+    toggleCheckStatus(idx, status){
+      this.$emit('toggleCheckStatus', idx, status);
     },
-    /**방총 체크*/
-    toggleCheckLose(idx){
-      this.$emit('toggleCheckLose', idx);
-    },
-    /**텐파이 체크*/
-    toggleCheckTenpai(idx){
-      this.$emit('toggleCheckTenpai', idx);
+/**화료 및 방총 불가능한 경우 반환*/
+    checkInvalidStatus(){
+      this.$emit('checkInvalidStatus');
     },
     /**일반유국 점수계산*/
     normalDraw(){
@@ -79,7 +75,7 @@ export default {
         :key="i"
         :class="class_check[i]"
         :style="isChecked(i, 'win')"
-        @click.stop="toggleCheckWin(i)"
+        @click.stop="toggleCheckStatus(i, 'win')"
       >
         {{ arrow_check[i] }}
       </div>
@@ -98,11 +94,11 @@ export default {
         :key="i"
         :class="class_check[i]"
         :style="isChecked(i, 'lose')"
-        @click.stop="toggleCheckLose(i)"
+        @click.stop="toggleCheckStatus(i, 'lose')"
       >
         {{ arrow_check[i] }}
       </div>
-      <div class="ok"><!-- 화료 함수 연결 -->
+      <div class="ok" @click.stop="checkInvalidStatus()"><!-- 화료 함수 연결 -->
         OK
       </div>
     </div>
@@ -126,7 +122,7 @@ export default {
         :key="i"
         :class="class_check[i]"
         :style="isChecked(i, 'tenpai')"
-        @click.stop="toggleCheckTenpai(i)"
+        @click.stop="toggleCheckStatus(i, 'tenpai')"
       >
         {{ arrow_check[i] }}
       </div>
@@ -173,7 +169,7 @@ export default {
   background-color: #ffffff;
   position: fixed;
   text-align: center;
-  vertical-align: bottom;
+  white-space: nowrap;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
