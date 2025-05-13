@@ -25,8 +25,12 @@ export default {
     isChecked(x, status) {
       if (status==='win')
         return {color: this.win[x]===true ? 'red' : ''};
-      else if (status==='lose')
-        return {color: this.lose[x]===true ? 'red' : ''};
+      else if (status==='lose'){
+        if (this.win[x]===true)
+          return {color: 'gray'};
+        else
+          return {color: this.lose[x]===true ? 'red' : ''};
+      }
       else if (status==='tenpai')
         return {color: this.tenpai[x]===true ? 'red' : ''};
     },

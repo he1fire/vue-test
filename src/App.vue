@@ -109,9 +109,11 @@ export default {
       if (status==='win')
         this.win[idx]=!this.win[idx];
       else if (status==='lose'){
-        if (!this.lose[idx]){
+        if (this.win[idx])// 화료한 사람이랑 겹치는 경우
+          return;
+        if (!this.lose[idx]){ // 방총당한 사람을 바꾸는 경우
           for (let i=0;i<this.lose.length;i++){
-            if (i!==idx)
+            if (i!==idx) // 자신이 아닌 사람들의 체크를 해제
               this.lose[i]=false;
           }
         }
@@ -124,10 +126,6 @@ export default {
     checkInvalidStatus(){
       let cnt_win=0, cnt_lose=0;
       for (let i=0;i<this.win.length;i++){
-        if (this.win[i]===true && this.lose[i]===true){ // 화료와 동시에 방총 (불가능한 경우)
-          this.showModal('화료한 사람과 방총당한 사람이 같습니다.');
-          return;
-        }
         if (this.win[i]===true) // 화료 인원 세기
           cnt_win++;
         if (this.lose[i]===true) // 방총 인원 세기
