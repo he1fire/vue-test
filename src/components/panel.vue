@@ -1,10 +1,10 @@
 <script>
 export default {
   props: {
-    now_wind: String,
-    now_round: Number,
-    cnt_riichi: Number,
-    cnt_renjang: Number,
+    currentWind: String,
+    currentRound: Number,
+    countRiichi: Number,
+    countRenchan: Number,
   },
   emits: ['showModal'],
   data(){
@@ -24,7 +24,7 @@ export default {
 <div class="container_mid" id='Mid'>
   <!-- 현재 라운드 -->
   <div class="now">
-    {{ now_wind }} {{ now_round }} 局
+    {{ currentWind }} {{ currentRound }} 局
   </div>
   <!-- 현재 총 리치봉 -->
   <div class="riichi">
@@ -32,7 +32,7 @@ export default {
       <div class="circle" style="width:5px; height:5px;"></div>
     </div>
     <div>
-      x {{ cnt_riichi }}
+      x {{ countRiichi }}
     </div>
   </div>
   <!-- 현재 연장봉 -->
@@ -50,7 +50,7 @@ export default {
       <div class="blackcircle" style="margin: 5px 0px auto 0px; visibility: hidden;"></div>
     </div>
     <div>
-      x {{ cnt_renjang }}
+      x {{ countRenchan }}
     </div>
   </div>
   <!-- 옵션 버튼 -->

@@ -7,8 +7,8 @@ export default {
     scoreLow: Number,
     isEffect: Boolean,
     scoreEffect: Number,
-    score_gap: Number,
-    riichi: Boolean,
+    scoreGap: Number,
+    isRiichi: Boolean,
   },
   emits: ['toggleActiveRiichi'],
   data(){
@@ -21,8 +21,8 @@ export default {
       return {color: this.wind==='東' ? 'red' : ''};
     },
     /**리치봉 표시*/
-    isRiichi() {
-      return {visibility: this.riichi===true ? 'visible' : 'hidden'};
+    showRiichi() {
+      return {visibility: this.isRiichi===true ? 'visible' : 'hidden'};
     },
     /**점수 변동에 따른 글자색*/
     isDiff() {
@@ -44,7 +44,7 @@ export default {
 <template>
 <div class="container_player" :id=seat>
   <!-- 리치봉 -->
-  <div class="stick" :style="isRiichi()">
+  <div class="stick" :style="showRiichi()">
     <div class="circle"></div>
   </div>
   <!-- 현재 바람 -->

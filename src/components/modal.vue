@@ -3,14 +3,13 @@ export default {
   props: {
     scoresDiff: Array,
     names: Array,
-    winner: Number,
-    score_fan: Number,
-    score_bu: Number,
-    win: Array,
-    lose: Array,
-    tenpai: Array,
-    round_status: String,
-    modal_type: String,
+    focusWinner: Number,
+    inputFan: Number,
+    inputBu: Number,
+    isWin: Array,
+    isLose: Array,
+    isTenpai: Array,
+    modalType: String,
   },
   emits: ['showModal', 'hideModal', 'toggleCheckStatus', 'checkInvalidStatus', 'calculateWin', 'calculateDraw', 'saveRound'],
   data(){
@@ -26,22 +25,22 @@ export default {
     /**체크되었다면 붉은색으로 표시*/
     isChecked(x, status) {
       if (status==='win')
-        return {color: this.win[x]===true ? 'red' : ''};
+        return {color: this.isWin[x]===true ? 'red' : ''};
       else if (status==='lose'){
-        if (this.win[x]===true)
+        if (this.isWin[x]===true)
           return {color: 'gray'};
         else
-          return {color: this.lose[x]===true ? 'red' : ''};
+          return {color: this.isLose[x]===true ? 'red' : ''};
       }
       else if (status==='tenpai')
-        return {color: this.tenpai[x]===true ? 'red' : ''};
+        return {color: this.isTenpai[x]===true ? 'red' : ''};
       else if (status==='fan')
-        return {color: x===this.score_fan ? 'red' : ''};
+        return {color: x===this.inputFan ? 'red' : ''};
       else if (status==='bu')
-        return {color: x===this.score_bu ? 'red' : ''};
+        return {color: x===this.inputBu ? 'red' : ''};
     },
     isYakuman(x){
-      return {display: ((this.score_fan < 9 && x === 9) || x === this.score_fan) ? '' : 'none'};
+      return {display: ((this.inputFan < 9 && x === 9) || x === this.inputFan) ? '' : 'none'};
     },
     /**점수 변동에 따른 글자색*/
     isDiff(x) {
@@ -87,7 +86,7 @@ export default {
 <template>
 <div class="modal" @click="hideModal">
   <!-- 화료 인원 선택창 -->
-  <div v-if="modal_type==='check_player_win'" class="modal_content" @click.stop>
+  <div v-if="modalType==='check_player_win'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         화료한 사람을 선택해 주세요.
@@ -106,7 +105,7 @@ export default {
     </div>
   </div>
   <!--방총 인원 선택창 -->
-  <div v-else-if="modal_type==='check_player_lose'" class="modal_content" @click.stop>
+  <div v-else-if="modalType==='check_player_lose'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         방총당한 사람을 선택해 주세요.
@@ -125,9 +124,9 @@ export default {
     </div>
   </div>
   <!-- 판/부 선택창 -->
-  <div v-else-if="modal_type==='check_score'" class="modal_content" @click.stop>
+  <div v-else-if="modalType==='check_score'" class="modal_content" @click.stop>
     <div>
-      {{ names[winner] }}의 점수를 입력해주세요.
+      {{ names[focusWinner] }}의 점수를 입력해주세요.
     </div>
     <div class="container_check_fanbu">
       <div class="fan">
@@ -177,7 +176,7 @@ export default {
     </div>
   </div>
   <!-- 유국 종류 선택창 -->
-  <div v-else-if="modal_type==='choose_draw_kind'" class="modal_content" @click.stop>
+  <div v-else-if="modalType==='choose_draw_kind'" class="modal_content" @click.stop>
     <div class="modal_choose_draw" @click.stop="showModal('check_player_tenpai')">
       일반유국
     </div>
@@ -186,7 +185,7 @@ export default {
     </div>
   </div>
   <!-- 텐파이 인원 선택창 -->
-  <div v-else-if="modal_type==='check_player_tenpai'" class="modal_content" @click.stop>
+  <div v-else-if="modalType==='check_player_tenpai'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         텐파이한 사람을 선택해 주세요.
@@ -205,7 +204,7 @@ export default {
     </div>
   </div>
   <!-- 점수 확인창 -->
-  <div v-else-if="modal_type==='show_score'" class="modal_content" style="border-radius:50%;" @click.stop>
+  <div v-else-if="modalType==='show_score'" class="modal_content" style="border-radius:50%;" @click.stop>
     <div class="container_show_score_diff">
       <div v-for="(_, i) in class_score_diff"
         :key="i"
@@ -221,7 +220,7 @@ export default {
   </div>
   <!-- 메시지 팝업창 -->
   <div v-else class="modal_content" @click.stop>
-    <div class="modal_text">{{ modal_type }}</div>
+    <div class="modal_text">{{ modalType }}</div>
   </div>
 </div>
 </template>
