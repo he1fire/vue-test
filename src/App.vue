@@ -93,13 +93,9 @@ export default {
       }, 20); // 0.02초 * 50번 = 1초동안 실행
     },
     /**모달 창 켜기*/
-    showModal(type, status, changed=[]){
+    showModal(type, status){
       this.modal_type=type;
       this.round_status=status;
-      if (changed.length>0){
-        for (let i=0;i<this.scoresDiff.length;i++)
-          this.scoresDiff[i]=changed[i];
-      }
       this.modal=true;
     },
     /**모달 창 끄기*/
@@ -233,7 +229,7 @@ export default {
             this.scoresDiff[i]-=this.cnt_renjang*100;
           }
         }
-        this.showModal('show_score', 'tsumo', this.scoresDiff);
+        this.showModal('show_score', 'tsumo');
       }
     },
     /**유국 점수계산*/
@@ -251,7 +247,7 @@ export default {
             this.scoresDiff[i]=-3000/(this.seats.length-cnt_tenpai); 
         }
       }
-      this.showModal('show_score', 'normal_draw', this.scoresDiff);
+      this.showModal('show_score', 'normal_draw');
     },
     /**국 결과값 처리*/
     saveRound(){

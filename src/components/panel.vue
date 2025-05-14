@@ -13,8 +13,8 @@ export default {
   },
   methods: {
     /**모달 창 켜기*/
-    showModal(type, status, changed=[]){
-      this.$emit('showModal', type, status, changed);
+    showModal(type, status){
+      this.$emit('showModal', type, status);
     },
   }
 };

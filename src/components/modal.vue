@@ -53,8 +53,8 @@ export default {
         return {color: ''};
     },
     /**모달 창 켜기*/
-    showModal(type, status, changed=[]){
-      this.$emit('showModal', type, status, changed);
+    showModal(type, status){
+      this.$emit('showModal', type, status);
     },
     /**모달 창 끄기*/
     hideModal(){
@@ -181,7 +181,7 @@ export default {
     <div class="modal_choose_draw" @click.stop="showModal('check_player_tenpai')">
       일반유국
     </div>
-    <div class="modal_choose_draw" @click.stop="showModal('show_score', 'special_draw', [0, 0, 0, 0])">
+    <div class="modal_choose_draw" @click.stop="showModal('show_score', 'special_draw')">
       도중유국
     </div>
   </div>
