@@ -217,7 +217,7 @@ export default {
     /**화료 점수계산*/
     calculateWin(){
       if (this.roundStatus==='tsumo'){
-        //책임지불 설정
+        //책임지불 설정필요
         for (let i=0;i<this.seats.length;i++){
           if (i===this.focusWinner){
             this.scoresDiff[i]+=this.calculateScore(i);
@@ -261,8 +261,19 @@ export default {
       }
       // 점수 기록창에 국+본장 기록
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
-        // 친이 화료했는지 확인하고 아니라면 자리바꾸기
-        // 친이 화료했다면 연장봉 추가하고 아니라면 연장봉 초기화
+        let chk_nowin=false;
+        for (let i=0;i<this.winds.length;i++){
+          if (this.winds[i]==='東' && this.isWin[i]===false){ // 친이 노텐인지 체크
+            chk_nowin=true;
+            break;
+          }
+        }
+        if (chk_nowin){ // 친이 화료를 못했다면
+          this.changeWindsAndRounds(); // 바람 및 라운드 변경
+          this.countRenchan=0; // 연장봉 초기화
+        }
+        else
+          this.countRenchan++; // 연장봉 추가
         this.countRiichi=0; // 리치봉 초기화
       }
       else if (this.roundStatus==='normal_draw'){ // 일반유국이라면
