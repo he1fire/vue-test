@@ -14,7 +14,8 @@ export default {
       winds: ["東", "南", "西", "北"], // 플레이어별 현재 자풍
       scores: [250, 250, 250, 250], // 플레이어별 현재 점수 (100자리 이상)
       scores_low: [0, 0, 0, 0], // 플레이어별 현재 점수 (100자리 이하)
-      scores_effect: [false, false, false, false], // 플레이어별 점수 변환 이펙트
+      effect: [false, false, false, false], // 플레이어별 점수 변환 이펙트
+      scores_effect: [0, 0, 0, 0], // 플레이어별 이펙트 점수
       scores_change: [0, 0, 0, 0], // 플레이어별 변동 점수
       scores_gap: [0, 0, 0, 0], // 플레이어간 점수 차이
       names: ["▼", "▶", "▲", "◀"], // 플레이어별 이름
@@ -76,7 +77,8 @@ export default {
       for (let i=0;i<50;i++){ // 변경될 점수 사이를 50등분해서 저장
         arr[i]=start_score+(this.scores_change[idx]/50)*(i+1);
       }
-      this.scores_effect[idx]=true;
+      this.effect[idx]=true;
+      this.scores_effect[idx]=this.scores_change[idx];
       let timecnt=0;
       let repeat=setInterval(() => { // 시간에 따라 반복
         let x=Math.floor(arr[timecnt]/100), y=Math.abs(arr[timecnt]%100);
@@ -85,8 +87,8 @@ export default {
         timecnt++;
         if (timecnt>=50){
           clearInterval(repeat);
-          this.scores_change=[0,0,0,0];
-          this.scores_effect[idx]=false;
+          this.effect[idx]=false;
+          this.scores_effect=[0,0,0,0];
         }
       }, 20); // 0.02초 * 50번 = 1초동안 실행
     },
@@ -104,6 +106,7 @@ export default {
     hideModal(){
       this.modal_type='';
       this.round_status='';
+      this.scores_change=[0,0,0,0];
       this.winner=-1;
       this.score_fan=0;
       this.score_bu=2;
@@ -296,8 +299,8 @@ export default {
   :wind="winds[i]"
   :score="scores[i]"
   :score_low="scores_low[i]"
+  :effect="effect[i]"
   :score_effect="scores_effect[i]"
-  :score_change="scores_change[i]"
   :scores_gap="scores_gap[i]"
   :riichi="riichi[i]"
   @toggleActiveRiichi="toggleActiveRiichi"

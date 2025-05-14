@@ -5,8 +5,8 @@ export default {
     wind: String,
     score: Number,
     score_low: Number,
-    score_effect: Boolean,
-    score_change: Number,
+    effect: Boolean,
+    score_effect: Number,
     score_gap: Number,
     riichi: Boolean,
   },
@@ -26,9 +26,9 @@ export default {
     },
     /**점수 변동에 따른 글자색*/
     isDiff() {
-      if (this.score_change>0)
+      if (this.score_effect>0)
         return {color: 'limegreen'};
-      else if (this.score_change<0)
+      else if (this.score_effect<0)
         return {color: 'red'};
       else
         return {color: ''};
@@ -56,8 +56,8 @@ export default {
     {{ score }}<span style="font-size: 50px;"><span v-if="this.score_low<10">0</span>{{ score_low }}</span>
   </div>
   <!-- 변경되는 점수 -->
-  <div v-show="score_effect===true" class="change" :style="isDiff()">
-    <span v-show="score_change>0">+</span>{{ score_change }}
+  <div v-show="effect===true" class="change" :style="isDiff()">
+    <span v-show="score_effect>0">+</span>{{ score_effect }}
   </div>
 </div>
 </template>
