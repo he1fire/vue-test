@@ -4,6 +4,8 @@ export default {
     scoresDiff: Array,
     names: Array,
     focusWinner: Number,
+    isFao: Boolean,
+    focusFao: Number,
     inputFan: Number,
     inputBu: Number,
     isWin: Array,
@@ -23,7 +25,7 @@ export default {
     };
   },
   methods: {
-    /**체크되었다면 붉은색으로 표시*/
+    /**체크 표시시 색상 변경*/
     isChecked(x, status) {
       if (status==='win') // 화료 체크
         return {color: this.isWin[x]===true ? 'red' : ''};
@@ -47,7 +49,10 @@ export default {
         else
           return {color: x===this.inputBu ? 'red' : ''};
       }
+      else if (status==='fao')
+        return {color: this.isFao===true ? 'blue' : 'red'};
     },
+    /**역만인지 확인하고 숨기기*/
     isYakuman(x){
       return {display: ((this.inputFan < 9 && x === 9) || x === this.inputFan) ? '' : 'none'};
     },
@@ -59,6 +64,13 @@ export default {
         return {color: 'red'};
       else
         return {color: ''};
+    },
+    /**책임지불이 켜져있는지 확인*/
+    checkFao(){
+      if (this.isFao===true) // 책임지불이 있다면 선택창 키기
+        ;
+      else
+        this.calculateWin();
     },
     /**모달 창 켜기*/
     showModal(type, status){
@@ -72,7 +84,7 @@ export default {
     toggleCheckStatus(idx, status){
       this.$emit('toggleCheckStatus', idx, status);
     },
-/**화료 및 방총 불가능한 경우 반환*/
+    /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(){
       this.$emit('checkInvalidStatus');
     },
@@ -157,7 +169,12 @@ export default {
         >
           {{ fan[i+9] }}
         </span>
-        <!-- <span>(책임지불<span>X</span>)</span> -->
+        <span v-if="inputFan>=9" style="font-size: 20px;" @click.stop="toggleCheckStatus(-1, 'fao')">(책임지불
+          <span :style="isChecked(0,'fao')">
+            <span v-if="isFao===true">O</span>
+            <span v-if="isFao===false">X</span>
+          </span>
+        )</span>
       </div>
       <div class="bu">
         부:
@@ -180,7 +197,7 @@ export default {
         </span>
       </div>
     </div>
-    <div style="font-size: 30px;" @click.stop="calculateWin()">
+    <div style="font-size: 30px;" @click.stop="checkFao()">
       OK
     </div>
   </div>
@@ -329,8 +346,8 @@ export default {
 .bu_check{
   grid-area: bu_check;
 }
-.fan_check span,
-.bu_check span {
+.fan_check > span,
+.bu_check > span {
   padding-right: 5px;
   padding-left: 5px;
 }

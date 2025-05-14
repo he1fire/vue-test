@@ -19,7 +19,10 @@ export default {
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
       scoresGap: [0, 0, 0, 0], // 플레이어간 점수 차이
       names: ["▼", "▶", "▲", "◀"], // 플레이어별 이름
-      focusWinner: 0, // 현재 점수 입력하는 플레이어
+      focusWinner: -1, // 현재 점수 입력하는 플레이어
+      focusLoser: -1, // 현재 방총 플레이어
+      isFao: false, // 책임지불 유무
+      focusFao: -1, // 현재 책임지불하는 플레이어
       inputFan: 0, // 현재 점수 (판)
       inputBu: 2, // 현재 점수 (부)
       isRiichi: [false, false, false, false], // 플레이어별 리치 유무
@@ -104,6 +107,9 @@ export default {
       this.roundStatus='';
       this.scoresDiff=[0,0,0,0];
       this.focusWinner=-1;
+      this.focusLoser=-1;
+      this.isFao=false;
+      this.focusFao=-1;
       this.inputFan=0;
       this.inputBu=2;
       this.isWin=[false, false, false, false];
@@ -130,9 +136,11 @@ export default {
         this.isTenpai[idx]=!this.isTenpai[idx];
       else if (status==='fan'){ // 판 체크
         if (idx>=9 && this.inputFan===idx) // 역만일경우 처리
-          {this.inputFan<14 ? this.inputFan++ : this.inputFan=9;}
-        else
+          this.inputFan<14 ? this.inputFan++ : this.inputFan=9;
+        else{
+          this.isFao=false; // 책임지불 초기화
           this.inputFan=idx;
+        }
         this.inputBu=2; // 30부로 초기화
       }
       else if (status==='bu'){ // 부 체크
@@ -143,6 +151,12 @@ export default {
         else if (this.inputFan>=4) // 만관 이상일때 부수 비활성화
           return;
         this.inputBu=idx;
+      }
+      else if (status==='fao'){
+        if (idx==-1) // 책임지불 켜기
+          this.isFao=!this.isFao;
+        else // 책임지불 플레이어 수정
+          this.focusFao=idx;
       }
     },
     /**화료 및 방총 불가능한 경우 반환*/
@@ -175,7 +189,18 @@ export default {
       }
       else{ // 론
         //다가화 처리하는 코드
-        //this.showModal('check_score', 'ron');
+        for (let i=0;i<this.isLose.length;i++){
+          if (this.isLose[i]===true) // 패자 찾아서 저장
+            this.focusLoser=i;
+        }
+        for (let i=0;i<this.isWin.length;i++){
+          if (this.isWin[(this.focusLoser+i)%4]===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
+            this.focusWinner=(this.focusLoser+i)%4;
+            // 첫번째 승자 확인용 변수 및 구문추가
+            break;
+          }
+        }
+        this.showModal('check_score', 'ron');
       }
     },
     /**실제 점수계산후 반환*/
@@ -224,20 +249,27 @@ export default {
     },
     /**화료 점수계산*/
     calculateWin(){
-      if (this.roundStatus==='tsumo'){
+      if (this.roundStatus==='tsumo'){ // 쯔모
         //책임지불 설정필요
         for (let i=0;i<this.seats.length;i++){
-          if (i===this.focusWinner){
-            this.scoresDiff[i]+=this.calculateScore(i);
-            this.scoresDiff[i]+=this.countRiichi*1000;
-            this.scoresDiff[i]+=this.countRenchan*300;
-          }
-          else{
-            this.scoresDiff[i]-=this.calculateScore(i);
-            this.scoresDiff[i]-=this.countRenchan*100;
+          if (i===this.focusWinner) // 승자라면
+            this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
+          else{ // 패자라면
+            this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*100;
           }
         }
         this.showModal('show_score', 'tsumo');
+      }
+      else if (this.roundStatus==='ron'){ // 론
+        //책임지불 설정필요
+        for (let i=0;i<this.seats.length;i++){
+          if (i===this.focusWinner) // 승자라면 (첫번째 승자 판별하여 리치/연장봉 몰아주기 구현 필요)
+            this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
+          else if (i===this.focusLoser){ // 패자라면
+            this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*300;
+          }
+        }
+        this.showModal('show_score', 'ron');
       }
     },
     /**유국 점수계산*/
@@ -271,7 +303,7 @@ export default {
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
         let chk_nowin=false;
         for (let i=0;i<this.winds.length;i++){
-          if (this.winds[i]==='東' && this.isWin[i]===false){ // 친이 노텐인지 체크
+          if (this.winds[i]==='東' && this.isWin[i]===false){ // 친이 화료했는지 체크
             chk_nowin=true;
             break;
           }
@@ -334,6 +366,8 @@ export default {
   :scoresDiff
   :names
   :focusWinner
+  :isFao
+  :focusFao
   :inputFan
   :inputBu
   :isWin
