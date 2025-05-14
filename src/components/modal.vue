@@ -18,7 +18,7 @@ export default {
       class_check: ["down_check", "right_check", "up_check", "left_check"],
       arrow_check: ["▼", "▶", "▲", "◀"],
       class_score_diff: ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"],
-      fan: ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+"],
+      fan: ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"],
       bu: [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110],
     };
   },
@@ -39,6 +39,9 @@ export default {
         return {color: x===this.score_fan ? 'red' : ''};
       else if (status==='bu')
         return {color: x===this.score_bu ? 'red' : ''};
+    },
+    isYakuman(x){
+      return {display: ((this.score_fan < 9 && x === 9) || x === this.score_fan) ? '' : 'none'};
     },
     /**점수 변동에 따른 글자색*/
     isDiff(x) {
@@ -127,7 +130,7 @@ export default {
         판:
       </div>
       <div class="fan_check">
-        <span v-for="(_, i) in fan"
+        <span v-for="(_, i) in fan.slice(0, 9)"
         :key="i"
         :style="isChecked(i, 'fan')"
         @click.stop="toggleCheckStatus(i, 'fan')"
@@ -135,7 +138,13 @@ export default {
           {{ fan[i] }}
         </span>
         <div></div>
-        <span>1배역만</span>
+        <span v-for="(_, i) in fan.slice(9)"
+        :key="i"
+        :style="[isChecked(i+9, 'fan'), isYakuman(i+9)]"
+        @click.stop="toggleCheckStatus(i+9, 'fan')"
+        >
+          {{ fan[i+9] }}
+        </span>
         <!-- <span>(책임지불<span>X</span>)</span> -->
       </div>
       <div class="bu">

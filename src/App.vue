@@ -108,10 +108,10 @@ export default {
     },
     /**화료, 방총, 텐파이 체크*/
     toggleCheckStatus(idx, status){
-      if (status==='win')
+      if (status==='win') // 화료 체크
         this.win[idx]=!this.win[idx];
-      else if (status==='lose'){
-        if (this.win[idx])// 화료한 사람이랑 겹치는 경우
+      else if (status==='lose'){ // 방총 체크
+        if (this.win[idx])// 화료한 사람이랑 겹치는 경우 스킵
           return;
         if (!this.lose[idx]){ // 방총당한 사람을 바꾸는 경우
           for (let i=0;i<this.lose.length;i++){
@@ -121,11 +121,15 @@ export default {
         }
         this.lose[idx]=!this.lose[idx];
       }
-      else if (status==='tenpai')
+      else if (status==='tenpai') // 텐파이 체크
         this.tenpai[idx]=!this.tenpai[idx];
-      else if (status==='fan')
-        this.score_fan=idx;
-      else if (status==='bu')
+      else if (status==='fan'){ // 판 체크
+        if (idx>=9 && this.score_fan===idx) // 역만일경우 처리
+          {this.score_fan<14 ? this.score_fan++ : this.score_fan=9;}
+        else
+          this.score_fan=idx;
+      }
+      else if (status==='bu') // 부 체크
         this.score_bu=idx;
     },
     /**화료 및 방총 불가능한 경우 반환*/
@@ -151,7 +155,7 @@ export default {
       }
       if (!cnt_lose){ // 쯔모
         for (let i=0;i<this.win.length;i++){
-          if (this.win[i]===true)
+          if (this.win[i]===true) // 승자 찾아서 저장
             this.winner=i;
         }
         this.showModal('check_score', 'tsumo');
