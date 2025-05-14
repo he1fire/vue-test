@@ -20,7 +20,7 @@ export default {
       names: ["▼", "▶", "▲", "◀"], // 플레이어별 이름
       winner: 0, // 현재 점수 입력하는 플레이어
       score_fan: 0, // 현재 점수 (판)
-      score_bu: 0, // 현재 점수 (부)
+      score_bu: 2, // 현재 점수 (부)
       riichi: [false, false, false, false], // 플레이어별 리치 유무
       win: [false, false, false, false], // 플레이어별 화료 유무
       lose: [false, false, false, false], // 플레이어별 방총 유무
@@ -85,6 +85,7 @@ export default {
         timecnt++;
         if (timecnt>=50){
           clearInterval(repeat);
+          this.scores_change=[0,0,0,0];
           this.scores_effect[idx]=false;
         }
       }, 20); // 0.02초 * 50번 = 1초동안 실행
@@ -93,14 +94,19 @@ export default {
     showModal(type, status, changed=[]){
       this.modal_type=type;
       this.round_status=status;
-      for (let i=0;i<this.scores_change.length;i++)
-        this.scores_change[i]=changed[i];
+      if (changed.length>0){
+        for (let i=0;i<this.scores_change.length;i++)
+          this.scores_change[i]=changed[i];
+      }
       this.modal=true;
     },
     /**모달 창 끄기*/
     hideModal(){
       this.modal_type='';
       this.round_status='';
+      this.winner=-1;
+      this.score_fan=0;
+      this.score_bu=2;
       this.win=[false, false, false, false];
       this.lose=[false, false, false, false];
       this.tenpai=[false, false, false, false];
@@ -161,13 +167,75 @@ export default {
         this.showModal('check_score', 'tsumo');
       }
       else{ // 론
-
+        //다가화 처리하는 코드
+        //this.showModal('check_score', 'ron');
       }
     },
-    /**일반유국 점수계산*/
-    normalDraw(){
+    /**실제 점수계산후 반환*/
+    calculateScore(who){
+      let arr_fan= [1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
+      let arr_bu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+      let arr_score=[2000,3000,3000,4000,4000,4000,6000,6000,8000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
+      let fan=arr_fan[this.score_fan], bu=arr_bu[this.score_bu];
+      let ret=0, chin_score=0, score=0;
+      if ((fan===3 && bu>=70) || (fan===4 && bu>=40)) // 3판 70부, 4판 40부 이상이면 만관
+        fan=5;
+      if (((fan===3 && bu>=60) || (fan===4 && bu>=30)) && this.opt_roundmangan) // 절상만관시 3판 60부, 4판 30부 인정
+        fan=5;
+      if (5<=fan)
+        chin_score=score=arr_score[fan-5]; // 만관 이상이면 배열 참조
+      else
+        chin_score=score=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
+      if (this.round_status==='ron'){ // 론일 때
+        if (this.winds[this.winner]==='東') // 친이라면 6배
+          score*=6;
+        else // 자라면 4배
+          score*=4;
+        score=Math.ceil(score/100)*100;
+        ret=score;
+      }
+      else if (this.round_status==='tsumo'){ // 쯔모일 때
+        chin_score*=2; // 친이라면 2배
+        chin_score=Math.ceil(chin_score/100)*100;
+        score=Math.ceil(score/100)*100;
+        if (this.winds[this.winner]==='東'){ // 이긴사람이 친이라면
+          if (who===this.winner) // 이겼다면 3배
+            ret=chin_score*3;
+          else // 졌다면 그대로
+            ret=chin_score;
+        }
+        else{ // 이긴사람이 자라면
+          if (who===this.winner) // 내가 이겼다면
+            ret=chin_score+score*2;
+          else if (this.winds[who]==='東') // 내가 친이라면 
+            ret=chin_score;
+          else
+            ret=score;
+        }
+      }
+      return ret;
+    },
+    /**화료 점수계산*/
+    calculateWin(){
+      if (this.round_status==='tsumo'){
+        //책임지불 설정
+        for (let i=0;i<this.seats.length;i++){
+          if (i===this.winner){
+            this.scores_change[i]+=this.calculateScore(i);
+            this.scores_change[i]+=this.cnt_riichi*1000;
+            this.scores_change[i]+=this.cnt_renjang*300;
+          }
+          else{
+            this.scores_change[i]-=this.calculateScore(i);
+            this.scores_change[i]-=this.cnt_renjang*100;
+          }
+        }
+        this.showModal('show_score', 'tsumo', this.scores_change);
+      }
+    },
+    /**유국 점수계산*/
+    calculateDraw(){
       let cnt_tenpai=0; // 총 텐파이 인원
-      let changed=[0, 0, 0, 0]; // 변경되는 점수
       for (let i=0;i<this.tenpai.length;i++){
         if (this.tenpai[i]===true) // 텐파이 인원 세기
           cnt_tenpai++;
@@ -175,12 +243,12 @@ export default {
       if (0<cnt_tenpai && cnt_tenpai<4){ //올텐파이나 올노텐이 아니라면
         for (let i=0;i<this.tenpai.length;i++){
           if (this.tenpai[i]===true) // 텐파이라면
-            changed[i]=3000/cnt_tenpai; // 3000 나눠서 획득
+            this.scores_change[i]=3000/cnt_tenpai; // 3000 나눠서 획득
           else
-          changed[i]=-3000/(this.seats.length-cnt_tenpai); 
+            this.scores_change[i]=-3000/(this.seats.length-cnt_tenpai); 
         }
       }
-      this.showModal('show_score', 'normal_draw', changed);
+      this.showModal('show_score', 'normal_draw', this.scores_change);
     },
     /**국 결과값 처리*/
     saveRound(){
@@ -259,7 +327,8 @@ export default {
   @hideModal="hideModal"
   @toggleCheckStatus="toggleCheckStatus"
   @checkInvalidStatus="checkInvalidStatus"
-  @normalDraw="normalDraw"
+  @calculateWin="calculateWin"
+  @calculateDraw="calculateDraw"
   @saveRound="saveRound"
 />
 </template>

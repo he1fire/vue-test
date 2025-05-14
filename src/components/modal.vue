@@ -12,7 +12,7 @@ export default {
     round_status: String,
     modal_type: String,
   },
-  emits: ['showModal', 'hideModal', 'toggleCheckStatus', 'checkInvalidStatus', 'normalDraw', 'saveRound'],
+  emits: ['showModal', 'hideModal', 'toggleCheckStatus', 'checkInvalidStatus', 'calculateWin', 'calculateDraw', 'saveRound'],
   data(){
     return {
       class_check: ["down_check", "right_check", "up_check", "left_check"],
@@ -68,9 +68,13 @@ export default {
     checkInvalidStatus(){
       this.$emit('checkInvalidStatus');
     },
-    /**일반유국 점수계산*/
-    normalDraw(){
-      this.$emit('normalDraw');
+    /**화료 점수계산*/
+    calculateWin(){
+      this.$emit('calculateWin');
+    },
+    /**유국 점수계산*/
+    calculateDraw(){
+      this.$emit('calculateDraw');
     },
     /**국 결과값 처리*/
     saveRound(){
@@ -168,7 +172,7 @@ export default {
         </span>
       </div>
     </div>
-    <div style="font-size: 30px;">
+    <div style="font-size: 30px;" @click.stop="calculateWin()">
       OK
     </div>
   </div>
@@ -195,7 +199,7 @@ export default {
       >
         {{ arrow_check[i] }}
       </div>
-      <div class="ok" @click.stop="normalDraw()">
+      <div class="ok" @click.stop="calculateDraw()">
         OK
       </div>
     </div>
