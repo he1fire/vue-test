@@ -111,7 +111,7 @@ export default {
       this.isTenpai=[false, false, false, false];
       this.modal=false;
     },
-    /**화료, 방총, 텐파이 체크*/
+    /**화료, 방총, 텐파이, 판/부 체크*/
     toggleCheckStatus(idx, status){
       if (status==='win') // 화료 체크
         this.isWin[idx]=!this.isWin[idx];
@@ -133,9 +133,17 @@ export default {
           {this.inputFan<14 ? this.inputFan++ : this.inputFan=9;}
         else
           this.inputFan=idx;
+        this.inputBu=2; // 30부로 초기화
       }
-      else if (status==='bu') // 부 체크
+      else if (status==='bu'){ // 부 체크
+        if (this.roundStatus==='ron' && idx===0) // 론일때 20부 이하 비활성화
+          return;
+        else if (this.inputFan===0 && idx<=1) // 1판 25부 이하 비활성화
+          return;
+        else if (this.inputFan>=4) // 만관 이상일때 부수 비활성화
+          return;
         this.inputBu=idx;
+      }
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(){
@@ -174,7 +182,7 @@ export default {
     calculateScore(who){
       let arr_fan= [1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
       let arr_bu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
-      let arr_score=[2000,3000,3000,4000,4000,4000,6000,6000,8000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
+      let arr_score=[2000,3000,3000,4000,4000,4000,6000,6000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
       let fan=arr_fan[this.inputFan], bu=arr_bu[this.inputBu];
       let ret=0, chin_score=0, score=0;
       if ((fan===3 && bu>=70) || (fan===4 && bu>=40)) // 3판 70부, 4판 40부 이상이면 만관
@@ -331,6 +339,7 @@ export default {
   :isWin
   :isLose
   :isTenpai
+  :roundStatus
   :modalType
   @showModal="showModal"
   @hideModal="hideModal"

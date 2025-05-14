@@ -26,9 +26,9 @@ export default {
     },
     /**점수 변동에 따른 글자색*/
     isDiff() {
-      if (this.scoreEffect>0)
+      if (this.scoreEffect>0) // 양수일때
         return {color: 'limegreen'};
-      else if (this.scoreEffect<0)
+      else if (this.scoreEffect<0) // 음수일때
         return {color: 'red'};
       else
         return {color: ''};
@@ -128,7 +128,7 @@ export default {
   font-size: 30px;
   padding-top: 30px;
   text-align: left;
-  transform: translate(-30px,-15px);
+  transform: translate(-15px,-15px);
 }
 
 /* 리치봉 그림 */

@@ -9,6 +9,7 @@ export default {
     isWin: Array,
     isLose: Array,
     isTenpai: Array,
+    roundStatus: String,
     modalType: String,
   },
   emits: ['showModal', 'hideModal', 'toggleCheckStatus', 'checkInvalidStatus', 'calculateWin', 'calculateDraw', 'saveRound'],
@@ -24,20 +25,28 @@ export default {
   methods: {
     /**체크되었다면 붉은색으로 표시*/
     isChecked(x, status) {
-      if (status==='win')
+      if (status==='win') // 화료 체크
         return {color: this.isWin[x]===true ? 'red' : ''};
-      else if (status==='lose'){
+      else if (status==='lose'){  // 방총 체크
         if (this.isWin[x]===true)
           return {color: 'gray'};
         else
           return {color: this.isLose[x]===true ? 'red' : ''};
       }
-      else if (status==='tenpai')
+      else if (status==='tenpai')  // 텐파이 체크
         return {color: this.isTenpai[x]===true ? 'red' : ''};
-      else if (status==='fan')
+      else if (status==='fan')  // 판 체크
         return {color: x===this.inputFan ? 'red' : ''};
-      else if (status==='bu')
-        return {color: x===this.inputBu ? 'red' : ''};
+      else if (status==='bu'){ // 부 체크
+        if (this.roundStatus==='ron' && x===0) // 론일때 20부 이하 비활성화
+          return {color: 'gray'};
+        else if (this.inputFan===0 && x<=1) // 1판 25부 이하 비활성화
+          return {color: 'gray'};
+        else if (this.inputFan>=4) // 만관 이상일때 부수 비활성화
+          return {color: 'gray'};
+        else
+          return {color: x===this.inputBu ? 'red' : ''};
+      }
     },
     isYakuman(x){
       return {display: ((this.inputFan < 9 && x === 9) || x === this.inputFan) ? '' : 'none'};
@@ -59,7 +68,7 @@ export default {
     hideModal(){
       this.$emit('hideModal');
     },
-    /**화료, 방총, 텐파이 체크*/
+    /**화료, 방총, 텐파이, 판/부 체크*/
     toggleCheckStatus(idx, status){
       this.$emit('toggleCheckStatus', idx, status);
     },
