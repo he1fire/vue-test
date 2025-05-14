@@ -390,6 +390,13 @@ export default {
 *{
   margin: 0;
   -webkit-text-size-adjust:none;
+  /* 글자 드래그 방지 */
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
 }
 html, body{
   overflow: hidden;
@@ -397,12 +404,6 @@ html, body{
   height: 100%;
   width: 100%;
   font-family: 'Noto Serif KR', serif;
-  /* 드래그방지 */
-  -ms-user-select: none; 
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
 }
 
 /* 가로모드 활성화 */
