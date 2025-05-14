@@ -68,7 +68,7 @@ export default {
   bottom: 0;
   right: 50%;
   margin: 0 -140px 0 0;
-  transform: translate(0px,5px);
+  transform: translate(0px, 5px);
 }
 #Right{
   top: 50%;
@@ -76,7 +76,7 @@ export default {
   margin: -70px 0 0 0;
   -ms-transform: rotate(270deg);
   -webkit-transform: rotate(270deg);
-  transform: rotate(270deg) translate(0,78px);
+  transform: rotate(270deg) translate(0, 78px);
 }
 #Up{
   top: 0;
@@ -84,7 +84,7 @@ export default {
   margin: 0 -140px 0 0;
   -ms-transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
-  transform: rotate(180deg) translate(0px,5px);
+  transform: rotate(180deg) translate(0px, 5px);
 }
 #Left{
   top: 50%;
@@ -92,7 +92,7 @@ export default {
   margin: -70px 0 0 0;
   -ms-transform: rotate(90deg);
   -webkit-transform: rotate(90deg);
-  transform: rotate(90deg) translate(0,78px);
+  transform: rotate(90deg) translate(0, 78px);
 }
 /* 플레이어창 */
 .container_player{
@@ -110,7 +110,7 @@ export default {
   grid-area: stick;
   visibility: hidden;
   border: 1px solid black;
-  transform: translate(0,20px);
+  transform: translate(0, 20px);
 }
 .wind{
   grid-area: wind;
@@ -128,7 +128,7 @@ export default {
   font-size: 30px;
   padding-top: 30px;
   text-align: left;
-  transform: translate(-15px,-15px);
+  transform: translate(-100px, -40px);
 }
 
 /* 리치봉 그림 */
