@@ -109,7 +109,8 @@ export default {
 .stick{
   grid-area: stick;
   visibility: hidden;
-  border: 1px solid black;
+  border-radius: 5px;
+  border: 2px solid black;
   transform: translate(0, 20px);
 }
 .wind{
