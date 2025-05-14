@@ -12,11 +12,11 @@ export default {
     return {
       seats: ["Down", "Right", "Up", "Left"], // 플레이어별 위치
       winds: ["東", "南", "西", "北"], // 플레이어별 현재 자풍
-      scores: [250, 250, 250, 250], // 플레이어별 현재 점수 (100자리 이상)
-      scores_low: [0, 0, 0, 0], // 플레이어별 현재 점수 (100자리 이하)
-      effect: [false, false, false, false], // 플레이어별 점수 변환 이펙트
-      scores_effect: [0, 0, 0, 0], // 플레이어별 이펙트 점수
-      scores_change: [0, 0, 0, 0], // 플레이어별 변동 점수
+      scoresHigh: [250, 250, 250, 250], // 플레이어별 현재 점수 (100자리 이상)
+      scoresLow: [0, 0, 0, 0], // 플레이어별 현재 점수 (100자리 이하)
+      isEffect: [false, false, false, false], // 플레이어별 점수 변환 이펙트
+      scoresEffect: [0, 0, 0, 0], // 플레이어별 이펙트 점수
+      scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
       scores_gap: [0, 0, 0, 0], // 플레이어간 점수 차이
       names: ["▼", "▶", "▲", "◀"], // 플레이어별 이름
       winner: 0, // 현재 점수 입력하는 플레이어
@@ -42,8 +42,8 @@ export default {
     toggleActiveRiichi(seat){
       let idx=this.seats.indexOf(seat); // 위치 기준 인덱스 반환
       if (this.riichi[idx]===false){ //  리치 활성화
-        if (this.scores[idx]>=10 || this.opt_minusriichi){ // 1000점 이상 있거나 음수리치가 가능하다면
-          this.scores[idx]-=10;
+        if (this.scoresHigh[idx]>=10 || this.opt_minusriichi){ // 1000점 이상 있거나 음수리치가 가능하다면
+          this.scoresHigh[idx]-=10;
           this.riichi[idx]=true;
           this.cnt_riichi++;
         }
@@ -52,7 +52,7 @@ export default {
         }
       }
       else{ // 리치 비활성화
-        this.scores[idx]+=10;
+        this.scoresHigh[idx]+=10;
         this.riichi[idx]=false;
         this.cnt_riichi--;
       }
@@ -72,23 +72,23 @@ export default {
     },
     /**점수 변동 효과*/
     changeScores(idx){
-      let start_score=this.scores[idx]*100;
+      let start_score=this.scoresHigh[idx]*100;
       let arr=[];
       for (let i=0;i<50;i++){ // 변경될 점수 사이를 50등분해서 저장
-        arr[i]=start_score+(this.scores_change[idx]/50)*(i+1);
+        arr[i]=start_score+(this.scoresDiff[idx]/50)*(i+1);
       }
-      this.effect[idx]=true;
-      this.scores_effect[idx]=this.scores_change[idx];
+      this.isEffect[idx]=true;
+      this.scoresEffect[idx]=this.scoresDiff[idx];
       let timecnt=0;
       let repeat=setInterval(() => { // 시간에 따라 반복
         let x=Math.floor(arr[timecnt]/100), y=Math.abs(arr[timecnt]%100);
-        this.scores[idx]=x // 100의 자리 변경
-        this.scores_low[idx]=y // 10의자리 변경
+        this.scoresHigh[idx]=x // 100의 자리 변경
+        this.scoresLow[idx]=y // 10의자리 변경
         timecnt++;
         if (timecnt>=50){
           clearInterval(repeat);
-          this.effect[idx]=false;
-          this.scores_effect=[0,0,0,0];
+          this.isEffect[idx]=false;
+          this.scoresEffect=[0,0,0,0];
         }
       }, 20); // 0.02초 * 50번 = 1초동안 실행
     },
@@ -97,8 +97,8 @@ export default {
       this.modal_type=type;
       this.round_status=status;
       if (changed.length>0){
-        for (let i=0;i<this.scores_change.length;i++)
-          this.scores_change[i]=changed[i];
+        for (let i=0;i<this.scoresDiff.length;i++)
+          this.scoresDiff[i]=changed[i];
       }
       this.modal=true;
     },
@@ -106,7 +106,7 @@ export default {
     hideModal(){
       this.modal_type='';
       this.round_status='';
-      this.scores_change=[0,0,0,0];
+      this.scoresDiff=[0,0,0,0];
       this.winner=-1;
       this.score_fan=0;
       this.score_bu=2;
@@ -224,16 +224,16 @@ export default {
         //책임지불 설정
         for (let i=0;i<this.seats.length;i++){
           if (i===this.winner){
-            this.scores_change[i]+=this.calculateScore(i);
-            this.scores_change[i]+=this.cnt_riichi*1000;
-            this.scores_change[i]+=this.cnt_renjang*300;
+            this.scoresDiff[i]+=this.calculateScore(i);
+            this.scoresDiff[i]+=this.cnt_riichi*1000;
+            this.scoresDiff[i]+=this.cnt_renjang*300;
           }
           else{
-            this.scores_change[i]-=this.calculateScore(i);
-            this.scores_change[i]-=this.cnt_renjang*100;
+            this.scoresDiff[i]-=this.calculateScore(i);
+            this.scoresDiff[i]-=this.cnt_renjang*100;
           }
         }
-        this.showModal('show_score', 'tsumo', this.scores_change);
+        this.showModal('show_score', 'tsumo', this.scoresDiff);
       }
     },
     /**유국 점수계산*/
@@ -246,20 +246,20 @@ export default {
       if (0<cnt_tenpai && cnt_tenpai<4){ //올텐파이나 올노텐이 아니라면
         for (let i=0;i<this.tenpai.length;i++){
           if (this.tenpai[i]===true) // 텐파이라면
-            this.scores_change[i]=3000/cnt_tenpai; // 3000 나눠서 획득
+            this.scoresDiff[i]=3000/cnt_tenpai; // 3000 나눠서 획득
           else
-            this.scores_change[i]=-3000/(this.seats.length-cnt_tenpai); 
+            this.scoresDiff[i]=-3000/(this.seats.length-cnt_tenpai); 
         }
       }
-      this.showModal('show_score', 'normal_draw', this.scores_change);
+      this.showModal('show_score', 'normal_draw', this.scoresDiff);
     },
     /**국 결과값 처리*/
     saveRound(){
       for (let i=0;i<this.riichi.length;i++) // 리치봉 수거
         this.riichi[i]=false;
       // 옵션에서 롤백한 경우 처리
-      for (let i=0;i<this.scores_change.length;i++){ // 점수 배분및 기록
-        if (this.scores_change[i]!==0)
+      for (let i=0;i<this.scoresDiff.length;i++){ // 점수 배분및 기록
+        if (this.scoresDiff[i]!==0)
           this.changeScores(i);
         // 점수 기록창에 점수 기록
       }
@@ -297,10 +297,10 @@ export default {
   :key="i"
   :seat="seats[i]"
   :wind="winds[i]"
-  :score="scores[i]"
-  :score_low="scores_low[i]"
-  :effect="effect[i]"
-  :score_effect="scores_effect[i]"
+  :scoreHigh="scoresHigh[i]"
+  :scoreLow="scoresLow[i]"
+  :isEffect="isEffect[i]"
+  :scoreEffect="scoresEffect[i]"
   :scores_gap="scores_gap[i]"
   :riichi="riichi[i]"
   @toggleActiveRiichi="toggleActiveRiichi"
@@ -316,7 +316,7 @@ export default {
 <!-- modal 컴포넌트 생성 -->
 <modal
   v-if="modal"
-  :scores_change
+  :scoresDiff
   :names
   :winner
   :score_fan

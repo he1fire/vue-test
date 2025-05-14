@@ -1,7 +1,7 @@
 <script>
 export default {
   props: {
-    scores_change: Array,
+    scoresDiff: Array,
     names: Array,
     winner: Number,
     score_fan: Number,
@@ -45,9 +45,9 @@ export default {
     },
     /**점수 변동에 따른 글자색*/
     isDiff(x) {
-      if (this.scores_change[x]>0)
+      if (this.scoresDiff[x]>0)
         return {color: 'limegreen'};
-      else if (this.scores_change[x]<0)
+      else if (this.scoresDiff[x]<0)
         return {color: 'red'};
       else
         return {color: ''};
@@ -212,7 +212,7 @@ export default {
         :class="class_score_diff[i]"
         :style="isDiff(i)"
       >
-        <span v-show="scores_change[i]>0">+</span>{{ scores_change[i] }}
+        <span v-show="scoresDiff[i]>0">+</span>{{ scoresDiff[i] }}
       </div>
       <div class="ok" @click.stop="saveRound()">
         OK

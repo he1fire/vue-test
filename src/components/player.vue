@@ -3,10 +3,10 @@ export default {
   props: {
     seat: String,
     wind: String,
-    score: Number,
-    score_low: Number,
-    effect: Boolean,
-    score_effect: Number,
+    scoreHigh: Number,
+    scoreLow: Number,
+    isEffect: Boolean,
+    scoreEffect: Number,
     score_gap: Number,
     riichi: Boolean,
   },
@@ -26,9 +26,9 @@ export default {
     },
     /**점수 변동에 따른 글자색*/
     isDiff() {
-      if (this.score_effect>0)
+      if (this.scoreEffect>0)
         return {color: 'limegreen'};
-      else if (this.score_effect<0)
+      else if (this.scoreEffect<0)
         return {color: 'red'};
       else
         return {color: ''};
@@ -53,11 +53,11 @@ export default {
   </div>
   <!-- 현재 점수 -->
   <div class="score" @click="toggleActiveRiichi()">
-    {{ score }}<span style="font-size: 50px;"><span v-if="this.score_low<10">0</span>{{ score_low }}</span>
+    {{ scoreHigh }}<span style="font-size: 50px;"><span v-if="this.scoreLow<10">0</span>{{ scoreLow }}</span>
   </div>
   <!-- 변경되는 점수 -->
-  <div v-show="effect===true" class="change" :style="isDiff()">
-    <span v-show="score_effect>0">+</span>{{ score_effect }}
+  <div v-show="isEffect===true" class="change" :style="isDiff()">
+    <span v-show="scoreEffect>0">+</span>{{ scoreEffect }}
   </div>
 </div>
 </template>
