@@ -95,6 +95,50 @@ export default {
         }
       }, 20); // 0.02초 * 50번 = 1초동안 실행
     },
+    /**실제 점수계산후 반환*/
+    calculateScore(who){
+      let arr_fan= [1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
+      let arr_bu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+      let arr_score=[2000,3000,3000,4000,4000,4000,6000,6000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
+      let fan=arr_fan[this.inputFan], bu=arr_bu[this.inputBu];
+      let ret=0, chin_score=0, score=0;
+      if ((fan===3 && bu>=70) || (fan===4 && bu>=40)) // 3판 70부, 4판 40부 이상이면 만관
+        fan=5;
+      if (((fan===3 && bu>=60) || (fan===4 && bu>=30)) && this.opt_roundmangan) // 절상만관시 3판 60부, 4판 30부 인정
+        fan=5;
+      if (5<=fan)
+        chin_score=score=arr_score[fan-5]; // 만관 이상이면 배열 참조
+      else
+        chin_score=score=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
+      if (this.roundStatus==='ron' || this.roundStatus==='ron_fao'){ // 론일 때
+        if (this.winds[this.focusWinner]==='東') // 친이라면 6배
+          score*=6;
+        else // 자라면 4배
+          score*=4;
+        score=Math.ceil(score/100)*100;
+        ret=score;
+      }
+      else if (this.roundStatus==='tsumo' || this.roundStatus==='tsumo_fao'){ // 쯔모일 때
+        chin_score*=2; // 친이라면 2배
+        chin_score=Math.ceil(chin_score/100)*100;
+        score=Math.ceil(score/100)*100;
+        if (this.winds[this.focusWinner]==='東'){ // 이긴사람이 친이라면
+          if (who===this.focusWinner) // 이겼다면 3배
+            ret=chin_score*3;
+          else // 졌다면 그대로
+            ret=chin_score;
+        }
+        else{ // 이긴사람이 자라면
+          if (who===this.focusWinner) // 내가 이겼다면
+            ret=chin_score+score*2;
+          else if (this.winds[who]==='東') // 내가 친이라면 
+            ret=chin_score;
+          else
+            ret=score;
+        }
+      }
+      return ret;
+    },
     /**모달 창 켜기*/
     showModal(type, status){
       this.modalType=type;
@@ -117,7 +161,7 @@ export default {
       this.isTenpai=[false, false, false, false];
       this.modal=false;
     },
-    /**화료, 방총, 텐파이, 판/부 체크*/
+    /**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
     toggleCheckStatus(idx, status){
       if (status==='win') // 화료 체크
         this.isWin[idx]=!this.isWin[idx];
@@ -153,11 +197,15 @@ export default {
         this.inputBu=idx;
       }
       else if (status==='fao'){
-        if (idx==-1) // 책임지불 켜기
-          this.isFao=!this.isFao;
-        else // 책임지불 플레이어 수정
+        if (this.focusWinner===idx) // 현재 승자와 같을때
+          return;
+        if (this.focusFao===idx)
+          this.focusFao=-1;
+        else
           this.focusFao=idx;
       }
+      else if (status==='isfao') // 책임지불 켜기
+        this.isFao=!this.isFao;
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
@@ -198,64 +246,30 @@ export default {
           this.showModal('check_score', 'ron');
         }
       }
-    },
-    /**실제 점수계산후 반환*/
-    calculateScore(who){
-      let arr_fan= [1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
-      let arr_bu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
-      let arr_score=[2000,3000,3000,4000,4000,4000,6000,6000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
-      let fan=arr_fan[this.inputFan], bu=arr_bu[this.inputBu];
-      let ret=0, chin_score=0, score=0;
-      if ((fan===3 && bu>=70) || (fan===4 && bu>=40)) // 3판 70부, 4판 40부 이상이면 만관
-        fan=5;
-      if (((fan===3 && bu>=60) || (fan===4 && bu>=30)) && this.opt_roundmangan) // 절상만관시 3판 60부, 4판 30부 인정
-        fan=5;
-      if (5<=fan)
-        chin_score=score=arr_score[fan-5]; // 만관 이상이면 배열 참조
-      else
-        chin_score=score=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
-      if (this.roundStatus==='ron'){ // 론일 때
-        if (this.winds[this.focusWinner]==='東') // 친이라면 6배
-          score*=6;
-        else // 자라면 4배
-          score*=4;
-        score=Math.ceil(score/100)*100;
-        ret=score;
+      else if (status==='fao'){
+        if (this.focusFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
+          return;
+        this.calculateWin();
       }
-      else if (this.roundStatus==='tsumo'){ // 쯔모일 때
-        chin_score*=2; // 친이라면 2배
-        chin_score=Math.ceil(chin_score/100)*100;
-        score=Math.ceil(score/100)*100;
-        if (this.winds[this.focusWinner]==='東'){ // 이긴사람이 친이라면
-          if (who===this.focusWinner) // 이겼다면 3배
-            ret=chin_score*3;
-          else // 졌다면 그대로
-            ret=chin_score;
-        }
-        else{ // 이긴사람이 자라면
-          if (who===this.focusWinner) // 내가 이겼다면
-            ret=chin_score+score*2;
-          else if (this.winds[who]==='東') // 내가 친이라면 
-            ret=chin_score;
-          else
-            ret=score;
-        }
-      }
-      return ret;
     },
     /**화료 점수계산*/
     calculateWin(){
-      if (this.roundStatus==='tsumo'){ // 쯔모
-        //책임지불 설정필요
-        for (let i=0;i<this.seats.length;i++){
-          if (i===this.focusWinner) // 승자
-            this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
-          else // 패자
-            this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*100;
+      if (this.roundStatus==='tsumo' || this.roundStatus==='tsumo_fao'){ // 쯔모
+        if (this.roundStatus==='tsumo'){
+          for (let i=0;i<this.seats.length;i++){
+            if (i===this.focusWinner) // 승자
+              this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
+            else // 패자
+              this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*100;
+          }
+        }
+        else if (this.roundStatus==='tsumo_fao'){ // 책임지불시
+          this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.countRiichi*1000+this.countRenchan*300;
+          this.scoresDiff[this.focusFao]-=this.calculateScore(this.focusWinner)+this.countRenchan*300;
         }
         this.showModal('show_score', 'tsumo');
       }
-      else if (this.roundStatus==='ron'){ // 론
+      else if (this.roundStatus==='ron' || this.roundStatus==='ron_fao'){ // 론
         //책임지불 설정필요
         let firstWinner=-1, chkFinish=false;
         for (let i=1;i<this.isWin.length;i++){
@@ -264,24 +278,28 @@ export default {
             break;
           }
         }
-          if (firstWinner===this.focusWinner) {// 승자+선하네
-            this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.countRiichi*1000+this.countRenchan*300;
-            this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusLoser)+this.countRenchan*300;
-          }
-          else{ // 나머지 승자
-            this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner);
-            this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusLoser);
-          }
+        if (firstWinner===this.focusWinner) { // 승자+선하네
+          this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.countRiichi*1000+this.countRenchan*300;
+          this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusWinner)+this.countRenchan*300;
+        }
+        else{ // 나머지 승자
+          this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner);
+          this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusWinner);
+        }
+        if (this.roundStatus==='ron_fao'){ // 책임지불시
+          this.scoresDiff[this.focusLoser]+=Math.floor(this.calculateScore(this.focusWinner)/2);
+          this.scoresDiff[this.focusFao]-=Math.floor(this.calculateScore(this.focusWinner)/2);
+        }
         for (let i=1;i<this.isWin.length;i++){
           if ((this.focusWinner+i)%4===this.focusLoser){ // 1바퀴를 모두 돌았을때
             chkFinish=true;
             break;
           }
           else if (this.isWin[(this.focusWinner+i)%4]===true){ // 다음 승자가 남아있을때
-            this.focusWinner=(this.focusWinner+i)%4;
+            this.focusWinner=(this.focusWinner+i)%4; // 현재 승자 변경
             this.inputFan=0;
             this.inputBu=2;
-            this.showModal('check_score', 'ron');
+            this.showModal('check_score', 'ron'); // 다음 승자 점수 입력
             break;
           }
         }

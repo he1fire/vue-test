@@ -52,7 +52,7 @@ export default {
             return {color: 'gray'};
         }
         else{
-          if (this.isWin[x]===true)
+          if (this.isWin[x]===true) // 승자와 같을때
             return {color: 'gray'};
           else
             return {color: this.isLose[x]===true ? 'red' : ''};
@@ -72,7 +72,19 @@ export default {
         else
           return {color: x===this.inputBu ? 'red' : ''};
       }
-      else if (status==='fao')
+      else if (status==='fao'){ // 책임지불 체크
+        if (x===-1){
+          if (this.focusFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
+            return {color: 'gray'};
+        }
+        else{
+          if (this.focusWinner===x) // 현재 승자와 같을때
+            return {color: 'gray'};
+          else
+            return {color: this.focusFao===x ? 'red' : ''};
+        }
+      }
+      else if (status==='isfao') // 점수창 OX
         return {color: this.isFao===true ? 'blue' : 'red'};
     },
     /**역만인지 확인하고 숨기기*/
@@ -91,7 +103,7 @@ export default {
     /**책임지불이 켜져있는지 확인*/
     checkFao(){
       if (this.isFao===true) // 책임지불이 있다면 선택창 키기
-        ;
+        this.showModal('check_player_fao',this.roundStatus+'_fao');
       else
         this.calculateWin();
     },
@@ -103,7 +115,7 @@ export default {
     hideModal(){
       this.$emit('hide-modal');
     },
-    /**화료, 방총, 텐파이, 판/부 체크*/
+    /**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
     toggleCheckStatus(idx, status){
       this.$emit('toggle-check-status', idx, status);
     },
@@ -192,8 +204,8 @@ export default {
         >
           {{ fan[i+9] }}
         </span>
-        <span v-if="inputFan>=9" style="font-size: 20px;" @click.stop="toggleCheckStatus(-1, 'fao')">(책임지불
-          <span :style="isChecked(0,'fao')">
+        <span v-if="inputFan>=9" style="font-size: 20px;" @click.stop="toggleCheckStatus(-1, 'isfao')">(책임지불
+          <span :style="isChecked(-1, 'isfao')">
             <span v-if="isFao===true">O</span>
             <span v-if="isFao===false">X</span>
           </span>
@@ -222,6 +234,25 @@ export default {
     </div>
     <div style="font-size: 30px;" @click.stop="checkFao()">
       OK
+    </div>
+  </div>
+  <!--책임지불 인원 선택창 -->
+  <div v-else-if="modalType==='check_player_fao'" class="modal_content" @click.stop>
+    <div class="container_check">
+      <div class="guide_message">
+        책임지불할 사람을 선택해 주세요.
+      </div>
+      <div v-for="(_, i) in class_check"
+        :key="i"
+        :class="class_check[i]"
+        :style="isChecked(i, 'fao')"
+        @click.stop="toggleCheckStatus(i, 'fao')"
+      >
+        {{ arrow_check[i] }}
+      </div>
+      <div class="ok" :style="isChecked(-1, 'fao')" @click.stop="checkInvalidStatus('fao')">
+        OK
+      </div>
     </div>
   </div>
   <!-- 유국 종류 선택창 -->
