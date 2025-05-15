@@ -264,16 +264,14 @@ export default {
             break;
           }
         }
-        for (let i=0;i<this.seats.length;i++){
-          if (i===this.focusWinner && firstWinner===this.focusWinner) // 승자+선하네
-            this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
-          else if (i===this.focusWinner) // 나머지 승자
-            this.scoresDiff[i]+=this.calculateScore(i);
-          else if (i===this.focusLoser && firstWinner===this.focusWinner) // 패자+선하네
-            this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*300;
-          else if (i===this.focusLoser) // 패자+나머지
-            this.scoresDiff[i]-=this.calculateScore(i);
-        }
+          if (firstWinner===this.focusWinner) {// 승자+선하네
+            this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.countRiichi*1000+this.countRenchan*300;
+            this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusLoser)+this.countRenchan*300;
+          }
+          else{ // 나머지 승자
+            this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner);
+            this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusLoser);
+          }
         for (let i=1;i<this.isWin.length;i++){
           if ((this.focusWinner+i)%4===this.focusLoser){ // 1바퀴를 모두 돌았을때
             chkFinish=true;
