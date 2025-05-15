@@ -196,7 +196,6 @@ export default {
           for (let i=0;i<this.isWin.length;i++){
             if (this.isWin[(this.focusLoser+i)%4]===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
               this.focusWinner=(this.focusLoser+i)%4;
-              // 첫번째 승자 확인용 변수 및 구문추가
               break;
             }
           }
@@ -253,9 +252,9 @@ export default {
       if (this.roundStatus==='tsumo'){ // 쯔모
         //책임지불 설정필요
         for (let i=0;i<this.seats.length;i++){
-          if (i===this.focusWinner) // 승자라면
+          if (i===this.focusWinner) // 승자
             this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
-          else{ // 패자라면
+          else{ // 패자
             this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*100;
           }
         }
@@ -263,14 +262,36 @@ export default {
       }
       else if (this.roundStatus==='ron'){ // 론
         //책임지불 설정필요
-        for (let i=0;i<this.seats.length;i++){
-          if (i===this.focusWinner) // 승자라면 (첫번째 승자 판별하여 리치/연장봉 몰아주기 구현 필요)
-            this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
-          else if (i===this.focusLoser){ // 패자라면
-            this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*300;
+        let firstWinner=-1, chkFinish=false;
+        for (let i=1;i<this.isWin.length;i++){
+          if (this.isWin[(this.focusLoser+i)%4]===true){
+            firstWinner=(this.focusLoser+i)%4; // 선하네 판별
+            break;
           }
         }
-        this.showModal('show_score', 'ron');
+        for (let i=0;i<this.seats.length;i++){
+          if (i===this.focusWinner && firstWinner===this.focusWinner) // 승자+선하네
+            this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
+          else if (i===this.focusWinner) // 나머지 승자
+            this.scoresDiff[i]+=this.calculateScore(i);
+          else if (i===this.focusLoser && firstWinner===this.focusWinner) // 패자+선하네
+            this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*300;
+            else if (i===this.focusLoser) // 패자+나머지
+            this.scoresDiff[i]-=this.calculateScore(i);
+        }
+        for (let i=1;i<this.isWin.length;i++){
+          if ((this.focusWinner+i)%4===this.focusLoser){ // 1바퀴를 모두 돌았을때
+            chkFinish=true;
+            break;
+          }
+          else if (this.isWin[(this.focusWinner+i)%4]===true){ // 다음 승자가 남아있을때
+            this.focusWinner=(this.focusWinner+i)%4;
+            this.showModal('check_score', 'ron');
+            break;
+          }
+        }
+        if (chkFinish) // 모든 승자의 점수를 체크했다면
+          this.showModal('show_score', 'ron');
       }
     },
     /**유국 점수계산*/
