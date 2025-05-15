@@ -398,8 +398,8 @@ export default {
 </script>
 
 <template>
-<!-- 각 방향별 player 컴포넌트 생성 -->
 <div class="background" @dblclick.self="toggleFullScreen()">
+  <!-- 각 방향별 player 컴포넌트 생성 -->
   <player
     v-for="(_, i) in seats"
     :key="i"
