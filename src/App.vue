@@ -162,22 +162,18 @@ export default {
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
       let cnt_win=0, cnt_lose=0;
+      for (let i=0;i<this.isWin.length;i++){
+        if (this.isWin[i]===true) // 화료 인원 세기
+          cnt_win++;
+        if (this.isLose[i]===true) // 방총 인원 세기
+          cnt_lose++;
+      }
       if (status==='win'){ // 화료일때
-        for (let i=0;i<this.isWin.length;i++){
-          if (this.isWin[i]===true) // 화료 인원 세기
-            cnt_win++;
-        }
         if (cnt_win===0 || cnt_win===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
           return -1;
         this.showModal('check_player_lose');
       }
       else if (status==='lose'){ // 방총일때
-        for (let i=0;i<this.isWin.length;i++){
-          if (this.isWin[i]===true) // 화료 인원 세기
-            cnt_win++;
-          if (this.isLose[i]===true) // 방총 인원 세기
-            cnt_lose++;
-        }
         if (cnt_win!==1 && cnt_lose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
           return;
         if (!cnt_lose){ // 쯔모
@@ -254,9 +250,8 @@ export default {
         for (let i=0;i<this.seats.length;i++){
           if (i===this.focusWinner) // 승자
             this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
-          else{ // 패자
+          else // 패자
             this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*100;
-          }
         }
         this.showModal('show_score', 'tsumo');
       }
@@ -276,7 +271,7 @@ export default {
             this.scoresDiff[i]+=this.calculateScore(i);
           else if (i===this.focusLoser && firstWinner===this.focusWinner) // 패자+선하네
             this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*300;
-            else if (i===this.focusLoser) // 패자+나머지
+          else if (i===this.focusLoser) // 패자+나머지
             this.scoresDiff[i]-=this.calculateScore(i);
         }
         for (let i=1;i<this.isWin.length;i++){
@@ -286,6 +281,8 @@ export default {
           }
           else if (this.isWin[(this.focusWinner+i)%4]===true){ // 다음 승자가 남아있을때
             this.focusWinner=(this.focusWinner+i)%4;
+            this.inputFan=0;
+            this.inputBu=2;
             this.showModal('check_score', 'ron');
             break;
           }
