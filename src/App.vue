@@ -460,8 +460,11 @@ export default {
   -khtml-user-select: none;
   user-select: none;
 }
-.background{
+html{
   overflow: hidden;
+  overscroll-behavior: none;
+}
+.background{
   position: relative;
   height: 100vh;
   width: 100vw;
@@ -470,7 +473,7 @@ export default {
 
 /* 가로모드 활성화 */
 @media (orientation: portrait) {
-	html {
+	html{
 		transform: rotate(-90deg);
 		transform-origin: top left;
 		position: absolute;
@@ -479,5 +482,9 @@ export default {
 		width: 100vh;
     height: 100vw;
 	}
+  .background{
+    width: 100vh;
+    height: 100vw;
+  }
 }
 </style>
