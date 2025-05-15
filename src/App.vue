@@ -40,7 +40,36 @@ export default {
       modalType: "", // 모달창 종류
     };
   },
+  mounted() {
+    document.addEventListener('dblclick', () => this.toggleFullScreen(document.documentElement));
+  },
+  beforeUnmount() {
+    document.removeEventListener('dblclick', () => this.toggleFullScreen(document.documentElement));
+  },
   methods: {
+    /**전체화면 활성화/비활성화*/
+    toggleFullScreen(element){
+      if (!document.fullscreenElement) {
+        if (element.requestFullscreen)
+          return element.requestFullscreen()
+        if (element.webkitRequestFullscreen)
+          return element.webkitRequestFullscreen()
+        if (element.mozRequestFullScreen)
+          return element.mozRequestFullScreen()
+        if (element.msRequestFullscreen)
+          return element.msRequestFullscreen()
+      } 
+      else {
+        if (document.exitFullscreen)
+          return document.exitFullscreen()
+        if (document.webkitCancelFullscreen)
+          return document.webkitCancelFullscreen()
+        if (document.mozCancelFullScreen)
+          return document.mozCancelFullScreen()
+        if (document.msExitFullscreen)
+          return document.msExitFullscreen()
+      }
+    },
     /**리치 활성화/비활성화*/
     toggleActiveRiichi(seat){
       let idx=this.seats.indexOf(seat); // 위치 기준 인덱스 반환
