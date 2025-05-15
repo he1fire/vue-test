@@ -369,7 +369,7 @@ export default {
   :scoreEffect="scoresEffect[i]"
   :scoreGap="scoresGap[i]"
   :isRiichi="isRiichi[i]"
-  @toggleActiveRiichi="toggleActiveRiichi"
+  @toggle-active-riichi="toggleActiveRiichi"
 />
 <!-- 중앙 panel 컴포넌트 생성 -->
 <panel
@@ -377,7 +377,7 @@ export default {
   :currentRound
   :countRiichi
   :countRenchan
-  @showModal="showModal"
+  @show-modal="showModal"
 />
 <!-- modal 컴포넌트 생성 -->
 <modal
@@ -394,13 +394,13 @@ export default {
   :isTenpai
   :roundStatus
   :modalType
-  @showModal="showModal"
-  @hideModal="hideModal"
-  @toggleCheckStatus="toggleCheckStatus"
-  @checkInvalidStatus="checkInvalidStatus"
-  @calculateWin="calculateWin"
-  @calculateDraw="calculateDraw"
-  @saveRound="saveRound"
+  @show-modal="showModal"
+  @hide-modal="hideModal"
+  @toggle-check-status="toggleCheckStatus"
+  @check-invalid-status="checkInvalidStatus"
+  @calculate-win="calculateWin"
+  @calculate-draw="calculateDraw"
+  @save-round="saveRound"
 />
 </template>
 

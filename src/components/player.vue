@@ -10,7 +10,7 @@ export default {
     scoreGap: Number,
     isRiichi: Boolean,
   },
-  emits: ['toggleActiveRiichi'],
+  emits: ['toggle-active-riichi'],
   data(){
     return {
     };
@@ -35,7 +35,7 @@ export default {
     },
     /**리치 활성화/비활성화*/
     toggleActiveRiichi(){
-      this.$emit('toggleActiveRiichi', this.seat);
+      this.$emit('toggle-active-riichi', this.seat);
     },
   }
 };

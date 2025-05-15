@@ -14,7 +14,7 @@ export default {
     roundStatus: String,
     modalType: String,
   },
-  emits: ['showModal', 'hideModal', 'toggleCheckStatus', 'checkInvalidStatus', 'calculateWin', 'calculateDraw', 'saveRound'],
+  emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round'],
   data(){
     return {
       class_check: ["down_check", "right_check", "up_check", "left_check"],
@@ -97,31 +97,31 @@ export default {
     },
     /**모달 창 켜기*/
     showModal(type, status){
-      this.$emit('showModal', type, status);
+      this.$emit('show-modal', type, status);
     },
     /**모달 창 끄기*/
     hideModal(){
-      this.$emit('hideModal');
+      this.$emit('hide-modal');
     },
     /**화료, 방총, 텐파이, 판/부 체크*/
     toggleCheckStatus(idx, status){
-      this.$emit('toggleCheckStatus', idx, status);
+      this.$emit('toggle-check-status', idx, status);
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
-      this.$emit('checkInvalidStatus', status);
+      this.$emit('check-invalid-status', status);
     },
     /**화료 점수계산*/
     calculateWin(){
-      this.$emit('calculateWin');
+      this.$emit('calculate-win');
     },
     /**유국 점수계산*/
     calculateDraw(){
-      this.$emit('calculateDraw');
+      this.$emit('calculate-draw');
     },
     /**국 결과값 처리*/
     saveRound(){
-      this.$emit('saveRound');
+      this.$emit('save-round');
     },
   }
 };

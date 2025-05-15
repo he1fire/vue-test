@@ -6,7 +6,7 @@ export default {
     countRiichi: Number,
     countRenchan: Number,
   },
-  emits: ['showModal'],
+  emits: ['show-modal'],
   data(){
     return {
     };
@@ -14,7 +14,7 @@ export default {
   methods: {
     /**모달 창 켜기*/
     showModal(type, status){
-      this.$emit('showModal', type, status);
+      this.$emit('show-modal', type, status);
     },
   }
 };
