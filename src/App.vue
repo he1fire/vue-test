@@ -40,15 +40,16 @@ export default {
       modalType: "", // 모달창 종류
     };
   },
-  mounted() {
-    document.addEventListener('dblclick', () => this.toggleFullScreen(document.documentElement));
-  },
-  beforeUnmount() {
-    document.removeEventListener('dblclick', () => this.toggleFullScreen(document.documentElement));
-  },
+  // mounted() {
+  //   document.addEventListener('dblclick', () => this.toggleFullScreen(document.documentElement));
+  // },
+  // beforeUnmount() {
+  //   document.removeEventListener('dblclick', () => this.toggleFullScreen(document.documentElement));
+  // },
   methods: {
     /**전체화면 활성화/비활성화*/
-    toggleFullScreen(element){
+    toggleFullScreen(){
+      const element=document.documentElement;
       if (!document.fullscreenElement) {
         if (element.requestFullscreen)
           return element.requestFullscreen()
@@ -404,50 +405,52 @@ export default {
 
 <template>
 <!-- 각 방향별 player 컴포넌트 생성 -->
-<player
-  v-for="(_, i) in seats"
-  :key="i"
-  :seat="seats[i]"
-  :wind="winds[i]"
-  :scoreHigh="scoresHigh[i]"
-  :scoreLow="scoresLow[i]"
-  :isEffect="isEffect[i]"
-  :scoreEffect="scoresEffect[i]"
-  :scoreGap="scoresGap[i]"
-  :isRiichi="isRiichi[i]"
-  @toggle-active-riichi="toggleActiveRiichi"
-/>
-<!-- 중앙 panel 컴포넌트 생성 -->
-<panel
-  :currentWind
-  :currentRound
-  :countRiichi
-  :countRenchan
-  @show-modal="showModal"
-/>
-<!-- modal 컴포넌트 생성 -->
-<modal
-  v-if="modal"
-  :scoresDiff
-  :names
-  :focusWinner
-  :isFao
-  :focusFao
-  :inputFan
-  :inputBu
-  :isWin
-  :isLose
-  :isTenpai
-  :roundStatus
-  :modalType
-  @show-modal="showModal"
-  @hide-modal="hideModal"
-  @toggle-check-status="toggleCheckStatus"
-  @check-invalid-status="checkInvalidStatus"
-  @calculate-win="calculateWin"
-  @calculate-draw="calculateDraw"
-  @save-round="saveRound"
-/>
+<div class="background" @dblclick.self="toggleFullScreen()">
+  <player
+    v-for="(_, i) in seats"
+    :key="i"
+    :seat="seats[i]"
+    :wind="winds[i]"
+    :scoreHigh="scoresHigh[i]"
+    :scoreLow="scoresLow[i]"
+    :isEffect="isEffect[i]"
+    :scoreEffect="scoresEffect[i]"
+    :scoreGap="scoresGap[i]"
+    :isRiichi="isRiichi[i]"
+    @toggle-active-riichi="toggleActiveRiichi"
+  />
+  <!-- 중앙 panel 컴포넌트 생성 -->
+  <panel
+    :currentWind
+    :currentRound
+    :countRiichi
+    :countRenchan
+    @show-modal="showModal"
+  />
+  <!-- modal 컴포넌트 생성 -->
+  <modal
+    v-if="modal"
+    :scoresDiff
+    :names
+    :focusWinner
+    :isFao
+    :focusFao
+    :inputFan
+    :inputBu
+    :isWin
+    :isLose
+    :isTenpai
+    :roundStatus
+    :modalType
+    @show-modal="showModal"
+    @hide-modal="hideModal"
+    @toggle-check-status="toggleCheckStatus"
+    @check-invalid-status="checkInvalidStatus"
+    @calculate-win="calculateWin"
+    @calculate-draw="calculateDraw"
+    @save-round="saveRound"
+  />
+</div>
 </template>
 
 <style>
@@ -463,11 +466,11 @@ export default {
   -khtml-user-select: none;
   user-select: none;
 }
-html, body{
+.background{
   overflow: hidden;
   position: relative;
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   font-family: 'Noto Serif KR', serif;
 }
 
