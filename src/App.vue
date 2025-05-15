@@ -270,7 +270,6 @@ export default {
         this.showModal('show_score', 'tsumo');
       }
       else if (this.roundStatus==='ron' || this.roundStatus==='ron_fao'){ // 론
-        //책임지불 설정필요
         let firstWinner=-1, chkFinish=false;
         for (let i=1;i<this.isWin.length;i++){
           if (this.isWin[(this.focusLoser+i)%4]===true){
@@ -299,6 +298,8 @@ export default {
             this.focusWinner=(this.focusWinner+i)%4; // 현재 승자 변경
             this.inputFan=0;
             this.inputBu=2;
+            this.isFao=false;
+            this.focusFao=-1;
             this.showModal('check_score', 'ron'); // 다음 승자 점수 입력
             break;
           }
