@@ -27,13 +27,36 @@ export default {
   methods: {
     /**체크 표시시 색상 변경*/
     isChecked(x, status) {
-      if (status==='win') // 화료 체크
-        return {color: this.isWin[x]===true ? 'red' : ''};
-      else if (status==='lose'){  // 방총 체크
-        if (this.isWin[x]===true)
-          return {color: 'gray'};
+      let cnt_win=0, cnt_lose=0;
+      if (status==='win'){ // 화료 체크
+        if (x===-1){ // ok버튼
+          for (let i=0;i<this.isWin.length;i++){
+            if (this.isWin[i]===true) // 화료 인원 세기
+              cnt_win++;
+          }
+          if (cnt_win===0 || cnt_win===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
+            return {color: 'gray'};
+        }
         else
-          return {color: this.isLose[x]===true ? 'red' : ''};
+          return {color: this.isWin[x]===true ? 'red' : ''};
+      }
+      else if (status==='lose'){  // 방총 체크
+        if (x===-1){ // ok버튼
+          for (let i=0;i<this.isWin.length;i++){
+            if (this.isWin[i]===true) // 화료 인원 세기
+              cnt_win++;
+            if (this.isLose[i]===true) // 방총 인원 세기
+              cnt_lose++;
+          }
+          if (cnt_win!==1 && cnt_lose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
+            return {color: 'gray'};
+        }
+        else{
+          if (this.isWin[x]===true)
+            return {color: 'gray'};
+          else
+            return {color: this.isLose[x]===true ? 'red' : ''};
+        }
       }
       else if (status==='tenpai')  // 텐파이 체크
         return {color: this.isTenpai[x]===true ? 'red' : ''};
@@ -85,8 +108,8 @@ export default {
       this.$emit('toggleCheckStatus', idx, status);
     },
     /**화료 및 방총 불가능한 경우 반환*/
-    checkInvalidStatus(){
-      this.$emit('checkInvalidStatus');
+    checkInvalidStatus(status){
+      this.$emit('checkInvalidStatus', status);
     },
     /**화료 점수계산*/
     calculateWin(){
@@ -120,7 +143,7 @@ export default {
       >
         {{ arrow_check[i] }}
       </div>
-      <div class="ok" @click.stop="showModal('check_player_lose')">
+      <div class="ok" :style="isChecked(-1, 'win')" @click.stop="checkInvalidStatus('win')">
         OK
       </div>
     </div>
@@ -139,7 +162,7 @@ export default {
       >
         {{ arrow_check[i] }}
       </div>
-      <div class="ok" @click.stop="checkInvalidStatus()"><!-- 화료 함수 연결 -->
+      <div class="ok" :style="isChecked(-1, 'lose')" @click.stop="checkInvalidStatus('lose')">
         OK
       </div>
     </div>

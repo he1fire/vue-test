@@ -160,47 +160,48 @@ export default {
       }
     },
     /**화료 및 방총 불가능한 경우 반환*/
-    checkInvalidStatus(){
+    checkInvalidStatus(status){
       let cnt_win=0, cnt_lose=0;
-      for (let i=0;i<this.isWin.length;i++){
-        if (this.isWin[i]===true) // 화료 인원 세기
-          cnt_win++;
-        if (this.isLose[i]===true) // 방총 인원 세기
-          cnt_lose++;
-      }
-      if (cnt_win===0){ // 화료한 사람이 없음 (불가능한 경우)
-        this.showModal('화료한 사람이 선택되지 않았습니다.');
-        return;
-      }
-      else if (cnt_win===4){ // 화료한 사람이 4명임 (불가능한 경우)
-        this.showModal('화료한 사람이 4명일 수 없습니다.');
-        return;
-      }
-      else if (cnt_win!==1 && cnt_lose===0) { // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
-        this.showModal('쯔모한 사람이 2명 이상일 수 없습니다.');
-        return;
-      }
-      if (!cnt_lose){ // 쯔모
+      if (status==='win'){ // 화료일때
         for (let i=0;i<this.isWin.length;i++){
-          if (this.isWin[i]===true) // 승자 찾아서 저장
-            this.focusWinner=i;
+          if (this.isWin[i]===true) // 화료 인원 세기
+            cnt_win++;
         }
-        this.showModal('check_score', 'tsumo');
+        if (cnt_win===0 || cnt_win===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
+          return -1;
+        this.showModal('check_player_lose');
       }
-      else{ // 론
-        //다가화 처리하는 코드
-        for (let i=0;i<this.isLose.length;i++){
-          if (this.isLose[i]===true) // 패자 찾아서 저장
-            this.focusLoser=i;
-        }
+      else if (status==='lose'){ // 방총일때
         for (let i=0;i<this.isWin.length;i++){
-          if (this.isWin[(this.focusLoser+i)%4]===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
-            this.focusWinner=(this.focusLoser+i)%4;
-            // 첫번째 승자 확인용 변수 및 구문추가
-            break;
+          if (this.isWin[i]===true) // 화료 인원 세기
+            cnt_win++;
+          if (this.isLose[i]===true) // 방총 인원 세기
+            cnt_lose++;
+        }
+        if (cnt_win!==1 && cnt_lose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
+          return;
+        if (!cnt_lose){ // 쯔모
+          for (let i=0;i<this.isWin.length;i++){
+            if (this.isWin[i]===true) // 승자 찾아서 저장
+              this.focusWinner=i;
           }
+          this.showModal('check_score', 'tsumo');
         }
-        this.showModal('check_score', 'ron');
+        else{ // 론
+          //다가화 처리하는 코드
+          for (let i=0;i<this.isLose.length;i++){
+            if (this.isLose[i]===true) // 패자 찾아서 저장
+              this.focusLoser=i;
+          }
+          for (let i=0;i<this.isWin.length;i++){
+            if (this.isWin[(this.focusLoser+i)%4]===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
+              this.focusWinner=(this.focusLoser+i)%4;
+              // 첫번째 승자 확인용 변수 및 구문추가
+              break;
+            }
+          }
+          this.showModal('check_score', 'ron');
+        }
       }
     },
     /**실제 점수계산후 반환*/
