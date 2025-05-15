@@ -40,12 +40,6 @@ export default {
       modalType: "", // 모달창 종류
     };
   },
-  // mounted() {
-  //   document.addEventListener('dblclick', () => this.toggleFullScreen(document.documentElement));
-  // },
-  // beforeUnmount() {
-  //   document.removeEventListener('dblclick', () => this.toggleFullScreen(document.documentElement));
-  // },
   methods: {
     /**전체화면 활성화/비활성화*/
     toggleFullScreen(){
