@@ -65,7 +65,7 @@ export default {
 </template>
 
 <style scoped>
-/* 플레이어창 위치*/
+/* 플레이어창 위치 */
 #Down{
   bottom: 0;
   right: 50%;

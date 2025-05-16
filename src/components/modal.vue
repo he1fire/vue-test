@@ -375,7 +375,7 @@ export default {
   grid-area: left_check;
 }
 
-/* 부/판 체크창*/
+/* 부/판 체크창 */
 .container_check_fanbu{
   display: grid;
   grid-template-rows: repeat(2, auto);

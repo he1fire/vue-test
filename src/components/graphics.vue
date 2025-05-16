@@ -35,6 +35,17 @@ export default {
   <div class="renchan_circle_mini" style="margin: auto 0px 3px 0px;"></div>
   <div class="renchan_circle_mini" style="margin: 5px 0px auto 0px; visibility: hidden;"></div>
 </div>
+<div v-else-if="kind==='dice'" class="container_dice">
+  <div v-if="value===1" class="dice_circle" style="grid-area: _1; background-color: red;"></div>
+  <div v-if="(value-2)%2===1" class="dice_circle" style="grid-area: _1;"></div>
+  <div v-if="value>=2" class="dice_circle" style="grid-area: _2;"></div>
+  <div v-if="value>=2" class="dice_circle" style="grid-area: _3;"></div>
+  <div v-if="value>=4" class="dice_circle" style="grid-area: _4;"></div>
+  <div v-if="value>=4" class="dice_circle" style="grid-area: _5;"></div>
+  <div v-if="value===6" class="dice_circle" style="grid-area: _6;"></div>
+  <div v-if="value===6" class="dice_circle" style="grid-area: _7;"></div>
+  
+</div>
 </template>
 
 <style scoped>
@@ -76,5 +87,34 @@ export default {
   height:3px;
   border-radius:50%;
   margin: 3px 0px auto 0px;
+}
+
+/* 주사위 */
+.container_dice{
+  display: grid;
+  width:35px;
+  height:35px;
+  grid-template-rows: repeat(7, 5px);
+  grid-template-columns: repeat(7, 5px);
+  grid-template-areas: 
+  ". . . . . . ."
+  ". _2 . . . _5 ."
+  ". . . . . . ."
+  ". _6 . _1 . _7 ."
+  ". . . . . . ."
+  ". _4 . . . _3 ."
+  ". . . . . . ."
+  ;
+  vertical-align: middle;
+  text-align: center;
+  border: 3px solid black;
+  border-radius:5px;
+  margin: auto;
+}
+.dice_circle{
+  background-color:black;
+  width:5px;
+  height:5px;
+  border-radius:50%;
 }
 </style>

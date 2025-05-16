@@ -56,7 +56,7 @@ export default {
 </template>
 
 <style scoped>
-/* 정보창 위치*/
+/* 정보창 위치 */
 #Mid{
   top: 50%;
   left: 50%;
