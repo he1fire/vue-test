@@ -36,11 +36,20 @@ export default {
       roundStatus: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
       diceValue: [1, 6], // 주사위 값
       isWall: [false, false, false, false], // 주사위 값에 따른 패산방향
+      randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
       optMinusRiichi: false, // 음수리치 옵션
       optRoundMangan: false, // 절상만관 옵션
       modal: false, // 모달창 활성화
       modalType: "", // 모달창 종류
     };
+  },
+  mounted() {
+    // 자리 선택 창
+    for (let i=3;i>0;i--){
+      let j=Math.floor(Math.random()*(i+1));
+      [this.randomSeats[i], this.randomSeats[j]]=[this.randomSeats[j], this.randomSeats[i]];
+    }
+    this.showModal('choose_seat');
   },
   methods: {
     /**전체화면 활성화/비활성화*/
@@ -48,23 +57,23 @@ export default {
       const element=document.documentElement;
       if (!document.fullscreenElement) {
         if (element.requestFullscreen)
-          return element.requestFullscreen()
+          return element.requestFullscreen();
         if (element.webkitRequestFullscreen)
-          return element.webkitRequestFullscreen()
+          return element.webkitRequestFullscreen();
         if (element.mozRequestFullScreen)
-          return element.mozRequestFullScreen()
+          return element.mozRequestFullScreen();
         if (element.msRequestFullscreen)
-          return element.msRequestFullscreen()
+          return element.msRequestFullscreen();
       } 
       else {
         if (document.exitFullscreen)
-          return document.exitFullscreen()
+          return document.exitFullscreen();
         if (document.webkitCancelFullscreen)
-          return document.webkitCancelFullscreen()
+          return document.webkitCancelFullscreen();
         if (document.mozCancelFullScreen)
-          return document.mozCancelFullScreen()
+          return document.mozCancelFullScreen();
         if (document.msExitFullscreen)
-          return document.msExitFullscreen()
+          return document.msExitFullscreen();
       }
     },
     /**리치 활성화/비활성화*/
@@ -459,6 +468,7 @@ export default {
     :roundStatus
     :diceValue
     :isWall
+    :randomSeats
     :modalType
     @show-modal="showModal"
     @hide-modal="hideModal"

@@ -2,7 +2,7 @@
 export default {
   props: {
     kind: String,
-    value: Number,
+    value: [Number, String],
   },
   data(){
     return {
@@ -35,6 +35,7 @@ export default {
   <div class="renchan_circle_mini" style="margin: auto 0px 3px 0px;"></div>
   <div class="renchan_circle_mini" style="margin: 5px 0px auto 0px; visibility: hidden;"></div>
 </div>
+<!-- 주사위 -->
 <div v-else-if="kind==='dice'" class="container_dice">
   <div v-if="value===1" class="dice_circle" style="grid-area: _1; background-color: red;"></div>
   <div v-if="(value-2)%2===1" class="dice_circle" style="grid-area: _1;"></div>
@@ -44,8 +45,9 @@ export default {
   <div v-if="value>=4" class="dice_circle" style="grid-area: _5;"></div>
   <div v-if="value===6" class="dice_circle" style="grid-area: _6;"></div>
   <div v-if="value===6" class="dice_circle" style="grid-area: _7;"></div>
-  
 </div>
+<!-- 바람 타일 -->
+<div v-else-if="kind==='tile'" class="tile" >{{ value }}</div>
 </template>
 
 <style scoped>
@@ -112,9 +114,17 @@ export default {
   margin: auto;
 }
 .dice_circle{
-  background-color:black;
-  width:5px;
-  height:5px;
-  border-radius:50%;
+  background-color: black;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+/* 타일 */
+.tile{
+  color: orange;
+  background-color: orange;
+  border: 3px solid black;
+  border-radius:5px;
 }
 </style>

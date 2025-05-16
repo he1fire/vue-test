@@ -53,7 +53,7 @@ export default {
     유국
   </div>
   <!-- 옵션 버튼 -->
-  <div class="option"><!-- 옵션함수 추가 -->
+  <div class="option">
     옵션
   </div>
 </div>
@@ -79,6 +79,7 @@ export default {
   position: fixed;
   text-align: center;
   font-size: 40px;
+  place-items: center;
 }
 .now{
   grid-area: now;
@@ -96,6 +97,7 @@ export default {
 }
 .option{
   grid-area: option;
+  /* display: flex; */
 }
 .win{
   grid-area: win;

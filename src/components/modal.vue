@@ -19,6 +19,7 @@ export default {
     roundStatus: String,
     diceValue: Array,
     isWall: Array,
+    randomSeats: Array,
     modalType: String,
   },
   emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice'],
@@ -98,7 +99,9 @@ export default {
         return {transform: `translate(-50%, -50%) rotate(${360-this.winds.indexOf('東')*90}deg)`};
       else if (status==='dice') // 주사위 방향 보이기
         return {visibility: this.isWall[x]===true ? 'visible' : 'hidden'};
-      
+      else if (status==='tile'){
+        return {gridArea: `tile_${x+1}`};
+      }
     },
     /**역만인지 확인하고 숨기기*/
     isYakuman(x){
@@ -332,6 +335,18 @@ export default {
       </div>
     </div>
   </div>
+  <!-- 동남서북 선택창 -->
+  <div v-else-if="modalType==='choose_seat'" class="modal_content" @click.stop>
+    <div class="container_tile">
+      <graphics v-for="(_, i) in randomSeats"
+        :key="i"
+        kind="tile"
+        :style="isChecked(i, 'tile')"
+        :value="randomSeats[i]"
+        @click.stop=""
+      ></graphics>
+    </div>
+  </div>
   <!-- 메시지 팝업창 -->
   <div v-else if class="modal_content" @click.stop>
     <div class="modal_text">{{ modalType }}</div>
@@ -389,8 +404,7 @@ export default {
     ". down_check .";
   text-align: center;
   font-size: 70px;
-  align-items: center;
-  justify-items: center;
+  place-items: center;
 }
 .guide_message{
   grid-area: guide_message;
@@ -419,8 +433,6 @@ export default {
   "bu bu_check";
   text-align: center;
   font-size: 30px;
-  align-items: center;
-  justify-items: center;
 }
 .fan{
   grid-area: fan;
@@ -452,8 +464,7 @@ export default {
   text-align: center;
   line-height: 100px;
   font-size: 30px;
-  align-items: center;
-  justify-items: center;
+  place-items: center;
 }
 .down_score_diff{
   grid-area: down_score_diff;
@@ -518,5 +529,17 @@ export default {
   visibility: hidden;
   line-height: 82px;
   color: red;
+}
+
+/* 자리 선택창 */
+.container_tile{
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: repeat(3, 86px 15px) 86px;
+  grid-template-areas:
+    "tile_1 . tile_2 . tile_3 . tile_4";
+  text-align: center;
+  font-size: 80px;
+  margin: 15px;
 }
 </style>
