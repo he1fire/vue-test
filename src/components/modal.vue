@@ -5,6 +5,7 @@ export default {
     graphics,
   },
   props: {
+    winds: Array,
     scoresDiff: Array,
     names: Array,
     focusWinner: Number,
@@ -16,6 +17,8 @@ export default {
     isLose: Array,
     isTenpai: Array,
     roundStatus: String,
+    diceValue: Array,
+    isWall: Array,
     modalType: String,
   },
   emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice'],
@@ -91,6 +94,11 @@ export default {
       }
       else if (status==='isfao') // 점수창 OX
         return {color: this.isFao===true ? 'blue' : 'red'};
+      else if (status==='dicemodal') // 주사위창 회전
+        return {transform: `translate(-50%, -50%) rotate(${360-this.winds.indexOf('東')*90}deg)`};
+      else if (status==='dice') // 주사위 방향 보이기
+        return {visibility: this.isWall[x]===true ? 'visible' : 'hidden'};
+      
     },
     /**역만인지 확인하고 숨기기*/
     isYakuman(x){
@@ -308,16 +316,17 @@ export default {
     </div>
   </div>
   <!-- 주사위 굴림창 -->
-  <div v-else-if="modalType==='roll_dice'" class="modal_content" @click.stop>
+  <div v-else-if="modalType==='roll_dice'" class="modal_content" :style="isChecked(-1, 'dicemodal')" @click.stop>
     <div class="container_roll" @click.stop="rollDice()">
-      <graphics kind="dice" style="grid-area: dice_1; transform: scale(2);"/>
-      <graphics kind="dice" style="grid-area: dice_2; transform: scale(2);"/>
-      <div class="sum" id="dicesum">
-        ?
+      <graphics kind="dice" :value="diceValue[0]" style="grid-area: dice_1; transform: scale(2);"/>
+      <graphics kind="dice" :value="diceValue[1]" style="grid-area: dice_2; transform: scale(2);"/>
+      <div class="sum">
+        {{ diceValue[0]+diceValue[1] }}
       </div>
       <div v-for="(_, i) in class_dice"
         :key="i"
         :class="class_dice[i]"
+        :style="isChecked(i, 'dice')"
       >
         {{ arr_arrow[i] }}
       </div>
@@ -484,6 +493,7 @@ export default {
   font-size: 50px;
   line-height: 82px;
   text-underline-position: under;
+  text-decoration: underline red 3px;
 }
 .down_dice{
   grid-area: down_dice;

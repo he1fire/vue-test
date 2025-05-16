@@ -34,6 +34,8 @@ export default {
       countRiichi: 0, // 현재 누적 리치봉
       countRenchan: 0, // 현재 누적 연장봉
       roundStatus: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
+      diceValue: [1, 6], // 주사위 값
+      isWall: [false, false, false, false], // 주사위 값에 따른 패산방향
       optMinusRiichi: false, // 음수리치 옵션
       optRoundMangan: false, // 절상만관 옵션
       modal: false, // 모달창 활성화
@@ -394,7 +396,22 @@ export default {
       this.hideModal(); // 모달 창 끄기
     },
     rollDice(){
-      
+      let timecnt=0;
+      let repeat=setInterval(() => { // 시간에 따라 반복
+        this.diceValue[0]=Math.floor(Math.random()*6)+1;
+        this.diceValue[1]=Math.floor(Math.random()*6)+1;
+        for (let i=0;i<this.isWall.length;i++){ // 패산 떼는 방향 표시
+          if (i===(this.diceValue[0]+this.diceValue[1]-1)%4)
+            this.isWall[i]=true;
+          else
+            this.isWall[i]=false;
+        }
+        timecnt++;
+        if (timecnt>=10){
+            clearInterval(repeat);
+            //dicesum.style.textDecoration='underline red 3px';
+        }
+      }, 50); // 0.05초 * 10번 = 0.5초동안 실행
     },
   }
 };
@@ -428,6 +445,7 @@ export default {
   <!-- modal 컴포넌트 생성 -->
   <modal
     v-if="modal"
+    :winds
     :scoresDiff
     :names
     :focusWinner
@@ -439,6 +457,8 @@ export default {
     :isLose
     :isTenpai
     :roundStatus
+    :diceValue
+    :isWall
     :modalType
     @show-modal="showModal"
     @hide-modal="hideModal"
