@@ -44,10 +44,6 @@ export default {
     <graphics kind="renchanStickMini"/>
     <span>x {{ countRenchan }}</span>
   </div>
-  <!-- 옵션 버튼 -->
-  <div class="option"><!-- 옵션함수 추가 -->
-    옵션
-  </div>
   <!-- 화료 버튼 -->
   <div class="win" @click="showModal('check_player_win')">
     화료
@@ -55,6 +51,10 @@ export default {
   <!-- 유국 버튼 -->
   <div class="draw" @click="showModal('choose_draw_kind')">
     유국
+  </div>
+  <!-- 옵션 버튼 -->
+  <div class="option"><!-- 옵션함수 추가 -->
+    옵션
   </div>
 </div>
 </template>
@@ -70,12 +70,12 @@ export default {
 /* 정보창 */
 .container_mid{
   display: grid;
-  grid-template-rows: repeat(3, auto);
+  grid-template-rows: 50px 50px 70px;
   grid-template-columns: repeat(3, 150px);
   grid-template-areas: 
-    "now now option"
     "now now win"
-    "riichi renchan draw";
+    "now now draw"
+    "riichi renchan option";
   position: fixed;
   text-align: center;
   font-size: 40px;
