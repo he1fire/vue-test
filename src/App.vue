@@ -393,6 +393,9 @@ export default {
       }
       this.hideModal(); // 모달 창 끄기
     },
+    rollDice(){
+      
+    },
   }
 };
 </script>
@@ -420,6 +423,7 @@ export default {
     :countRiichi
     :countRenchan
     @show-modal="showModal"
+    @roll-dice="rollDice"
   />
   <!-- modal 컴포넌트 생성 -->
   <modal
@@ -443,6 +447,7 @@ export default {
     @calculate-win="calculateWin"
     @calculate-draw="calculateDraw"
     @save-round="saveRound"
+    @roll-dice="rollDice"
   />
 </div>
 </template>

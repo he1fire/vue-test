@@ -1,5 +1,9 @@
 <script>
+import graphics from './graphics.vue'
 export default {
+  components: {
+    graphics,
+  },
   props: {
     scoresDiff: Array,
     names: Array,
@@ -14,12 +18,13 @@ export default {
     roundStatus: String,
     modalType: String,
   },
-  emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round'],
+  emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice'],
   data(){
     return {
+      arr_arrow: ["▼", "▶", "▲", "◀"],
       class_check: ["down_check", "right_check", "up_check", "left_check"],
-      arrow_check: ["▼", "▶", "▲", "◀"],
       class_score_diff: ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"],
+      class_dice: ["down_dice", "right_dice", "up_dice", "left_dice"],
       fan: ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"],
       bu: [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110],
     };
@@ -135,6 +140,10 @@ export default {
     saveRound(){
       this.$emit('save-round');
     },
+    /**주사위 굴리기*/
+    rollDice(){
+      this.$emit('roll-dice');
+    },
   }
 };
 </script>
@@ -153,7 +162,7 @@ export default {
         :style="isChecked(i, 'win')"
         @click.stop="toggleCheckStatus(i, 'win')"
       >
-        {{ arrow_check[i] }}
+        {{ arr_arrow[i] }}
       </div>
       <div class="ok" :style="isChecked(-1, 'win')" @click.stop="checkInvalidStatus('win')">
         OK
@@ -172,7 +181,7 @@ export default {
         :style="isChecked(i, 'lose')"
         @click.stop="toggleCheckStatus(i, 'lose')"
       >
-        {{ arrow_check[i] }}
+        {{ arr_arrow[i] }}
       </div>
       <div class="ok" :style="isChecked(-1, 'lose')" @click.stop="checkInvalidStatus('lose')">
         OK
@@ -248,7 +257,7 @@ export default {
         :style="isChecked(i, 'fao')"
         @click.stop="toggleCheckStatus(i, 'fao')"
       >
-        {{ arrow_check[i] }}
+        {{ arr_arrow[i] }}
       </div>
       <div class="ok" :style="isChecked(-1, 'fao')" @click.stop="checkInvalidStatus('fao')">
         OK
@@ -276,7 +285,7 @@ export default {
         :style="isChecked(i, 'tenpai')"
         @click.stop="toggleCheckStatus(i, 'tenpai')"
       >
-        {{ arrow_check[i] }}
+        {{ arr_arrow[i] }}
       </div>
       <div class="ok" @click.stop="calculateDraw()">
         OK
@@ -298,8 +307,24 @@ export default {
       </div>
     </div>
   </div>
+  <!-- 주사위 굴림창 -->
+  <div v-else-if="modalType==='roll_dice'" class="modal_content" @click.stop>
+    <div class="container_roll" @click.stop="rollDice()">
+      <graphics kind="dice" style="grid-area: dice_1; transform: scale(2);"/>
+      <graphics kind="dice" style="grid-area: dice_2; transform: scale(2);"/>
+      <div class="sum" id="dicesum">
+        ?
+      </div>
+      <div v-for="(_, i) in class_dice"
+        :key="i"
+        :class="class_dice[i]"
+      >
+        {{ arr_arrow[i] }}
+      </div>
+    </div>
+  </div>
   <!-- 메시지 팝업창 -->
-  <div v-else class="modal_content" @click.stop>
+  <div v-else if class="modal_content" @click.stop>
     <div class="modal_text">{{ modalType }}</div>
   </div>
 </div>
@@ -440,5 +465,48 @@ export default {
 .ok{
   grid-area: ok;
   font-size: 60px;
+}
+
+/* 주사위 굴림창 */
+.container_roll{
+  display: grid;
+  grid-template-rows: 15px 86px 15px;
+  grid-template-columns: repeat(3, 15px 86px) 15px;
+  grid-template-areas:
+    ". dice_1 . up_dice . dice_2 ."
+    ". dice_1 left_dice sum right_dice dice_2 ."
+    ". dice_1 . down_dice . dice_2 .";
+  text-align: center;
+  font-size: 15px;
+}
+.sum{
+  grid-area: sum;
+  font-size: 50px;
+  line-height: 82px;
+  text-underline-position: under;
+}
+.down_dice{
+  grid-area: down_dice;
+  visibility: hidden;
+  line-height: 15px;
+  color: red;
+}
+.right_dice{
+  grid-area: right_dice;
+  visibility: hidden;
+  line-height: 82px;
+  color: red;
+}
+.up_dice{
+  grid-area: up_dice;
+  visibility: hidden;
+  line-height: 15px;
+  color: red;
+}
+.left_dice{
+  grid-area: left_dice;
+  visibility: hidden;
+  line-height: 82px;
+  color: red;
 }
 </style>

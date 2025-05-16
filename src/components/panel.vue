@@ -10,7 +10,7 @@ export default {
     countRiichi: Number,
     countRenchan: Number,
   },
-  emits: ['show-modal'],
+  emits: ['show-modal', 'roll-dice'],
   data(){
     return {
     };
@@ -20,6 +20,10 @@ export default {
     showModal(type, status){
       this.$emit('show-modal', type, status);
     },
+    /**주사위 굴리기*/
+    rollDice(){
+      this.$emit('roll-dice');
+    },
   }
 };
 </script>
@@ -27,7 +31,7 @@ export default {
 <template>
 <div class="container_mid" id='Mid'>
   <!-- 현재 라운드 -->
-  <div class="now">
+  <div class="now" @click="showModal('roll_dice'), rollDice()">
     {{ currentWind }} {{ currentRound }} 局
   </div>
   <!-- 현재 총 리치봉 -->
