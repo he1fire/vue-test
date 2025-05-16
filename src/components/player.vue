@@ -1,5 +1,9 @@
 <script>
+import graphics from './graphics.vue'
 export default {
+  components: {
+    graphics,
+  },
   props: {
     seat: String,
     wind: String,
@@ -44,9 +48,7 @@ export default {
 <template>
 <div class="container_player" :id=seat>
   <!-- 리치봉 -->
-  <div class="stick" :style="showRiichi()">
-    <div class="circle"></div>
-  </div>
+  <graphics kind="riichiStick" class="stick" :style="showRiichi()"/>
   <!-- 현재 바람 -->
   <div class="wind" :style="isEast()"><!-- 점수비교함수 추가 -->
     {{ wind }}
@@ -108,10 +110,6 @@ export default {
 }
 .stick{
   grid-area: stick;
-  visibility: hidden;
-  border-radius: 5px;
-  border: 2px solid black;
-  transform: translate(0, 20px);
 }
 .wind{
   grid-area: wind;
@@ -130,14 +128,5 @@ export default {
   padding-top: 30px;
   text-align: left;
   transform: translate(-100px, -40px);
-}
-
-/* 리치봉 그림 */
-.circle{
-  background-color:red;
-  width:15px;
-  height:15px;
-  border-radius:50%;
-  margin: 3px auto 3px auto;
 }
 </style>

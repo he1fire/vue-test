@@ -1,5 +1,9 @@
 <script>
+import graphics from './graphics.vue'
 export default {
+  components: {
+    graphics,
+  },
   props: {
     currentWind: String,
     currentRound: Number,
@@ -28,37 +32,20 @@ export default {
   </div>
   <!-- 현재 총 리치봉 -->
   <div class="riichi">
-    <div class="riichi_stick_mini">
-      <div class="circle" style="width:5px; height:5px;"></div>
-    </div>
-    <div>
-      x {{ countRiichi }}
-    </div>
+    <graphics kind="riichiStickMini"/>
+    <span>x {{ countRiichi }}</span>
   </div>
   <!-- 현재 연장봉 -->
-  <div class="renjang">
-    <div class="riichi_stick_mini">
-      <div class="blackcircle" style="margin: auto 0px 5px 0px;visibility: hidden;"></div>
-      <div class="blackcircle"></div>
-      <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
-      <div class="blackcircle"></div>
-      <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
-      <div class="blackcircle"></div>
-      <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
-      <div class="blackcircle"></div>
-      <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
-      <div class="blackcircle" style="margin: 5px 0px auto 0px; visibility: hidden;"></div>
-    </div>
-    <div>
-      x {{ countRenchan }}
-    </div>
+  <div class="renchan">
+    <graphics kind="renchanStickMini"/>
+    <span>x {{ countRenchan }}</span>
   </div>
   <!-- 옵션 버튼 -->
-  <div class="option"><!-- 화료함수 추가 -->
+  <div class="option"><!-- 옵션함수 추가 -->
     옵션
   </div>
   <!-- 화료 버튼 -->
-  <div class="win" @click="showModal('check_player_win')"><!-- 화료함수 추가 -->
+  <div class="win" @click="showModal('check_player_win')">
     화료
   </div>
   <!-- 유국 버튼 -->
@@ -84,7 +71,7 @@ export default {
   grid-template-areas: 
     "now now option"
     "now now win"
-    "riichi renjang draw";
+    "riichi renchan draw";
   position: fixed;
   text-align: center;
   font-size: 40px;
@@ -98,8 +85,8 @@ export default {
   margin: 0 auto 0 auto;
   transform: translate(20px,-10px);
 }
-.renjang{
-  grid-area: renjang;
+.renchan{
+  grid-area: renchan;
   margin: auto;
   transform: translate(20px,-10px);
 }
@@ -111,29 +98,5 @@ export default {
 }
 .draw{
   grid-area: draw;
-}
-
-/* 리치봉, 연장봉 그림 */
-.riichi_stick_mini{
-  border: 1px solid black;
-  width: 50px;
-  height: 10px;
-  font-size: 0px;
-  transform: rotate(-50deg) translate(-52px,-10px);
-}
-.circle{
-  background-color:red;
-  width:15px;
-  height:15px;
-  border-radius:50%;
-  margin: 3px auto 3px auto;
-}
-.blackcircle{
-  display: inline-block;
-  background-color:black;
-  width:3px;
-  height:3px;
-  border-radius:50%;
-  margin: 3px 0px auto 0px;
 }
 </style>
