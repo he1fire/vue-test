@@ -100,8 +100,8 @@ export default {
         return {transform: `translate(-50%, -50%) rotate(${360-this.winds.indexOf('東')*90}deg)`};
       else if (status==='dice') // 주사위 방향 보이기
         return {visibility: this.isWall[x]===true ? 'visible' : 'hidden'};
-      else if (status==='tile'){
-        return {gridArea: `tile_${x+1}`, color: this.isOpened[x]===true ? '' : 'orange', backgroundColor: this.isOpened[x]===true ? '' : 'orange'};
+      else if (status==='tile'){ // 타일 뒤집기
+        return {gridArea: `tile_${x+1}`, color: this.isOpened[x]===true ? (this.randomSeats[x]==='東' ? 'red' : '') : 'orange', backgroundColor: this.isOpened[x]===true ? '' : 'orange'};
       }
     },
     /**역만인지 확인하고 숨기기*/
