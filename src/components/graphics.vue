@@ -122,8 +122,6 @@ export default {
 
 /* 타일 */
 .tile{
-  color: orange;
-  background-color: orange;
   border: 3px solid black;
   border-radius:5px;
 }

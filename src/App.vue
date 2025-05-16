@@ -36,6 +36,7 @@ export default {
       roundStatus: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
       diceValue: [1, 6], // 주사위 값
       isWall: [false, false, false, false], // 주사위 값에 따른 패산방향
+      isOpened: [false, false, false, false], // 타일이 공개되었는지
       randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
       optMinusRiichi: false, // 음수리치 옵션
       optRoundMangan: false, // 절상만관 옵션
@@ -241,6 +242,8 @@ export default {
       }
       else if (status==='isfao') // 책임지불 켜기
         this.isFao=!this.isFao;
+      else if (status==='tile') // 타일 뒤집기
+        this.isOpened[idx]=true;
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
@@ -468,6 +471,7 @@ export default {
     :roundStatus
     :diceValue
     :isWall
+    :isOpened
     :randomSeats
     :modalType
     @show-modal="showModal"

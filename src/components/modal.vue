@@ -19,6 +19,7 @@ export default {
     roundStatus: String,
     diceValue: Array,
     isWall: Array,
+    isOpened: Array,
     randomSeats: Array,
     modalType: String,
   },
@@ -100,7 +101,7 @@ export default {
       else if (status==='dice') // 주사위 방향 보이기
         return {visibility: this.isWall[x]===true ? 'visible' : 'hidden'};
       else if (status==='tile'){
-        return {gridArea: `tile_${x+1}`};
+        return {gridArea: `tile_${x+1}`, color: this.isOpened[x]===true ? '' : 'orange', backgroundColor: this.isOpened[x]===true ? '' : 'orange'};
       }
     },
     /**역만인지 확인하고 숨기기*/
@@ -343,7 +344,7 @@ export default {
         kind="tile"
         :style="isChecked(i, 'tile')"
         :value="randomSeats[i]"
-        @click.stop=""
+        @click.stop="toggleCheckStatus(i, 'tile')"
       ></graphics>
     </div>
   </div>
