@@ -37,14 +37,14 @@ export default {
   methods: {
     /**체크 표시시 색상 변경*/
     isChecked(x, status) {
-      let cnt_win=0, cnt_lose=0;
+      let cntWin=0, cntLose=0;
       if (status==='win'){ // 화료 체크
         if (x===-1){ // ok버튼
           for (let i=0;i<this.isWin.length;i++){
             if (this.isWin[i]===true) // 화료 인원 세기
-              cnt_win++;
+              cntWin++;
           }
-          if (cnt_win===0 || cnt_win===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
+          if (cntWin===0 || cntWin===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
             return {color: 'gray'};
         }
         else
@@ -54,11 +54,11 @@ export default {
         if (x===-1){ // ok버튼
           for (let i=0;i<this.isWin.length;i++){
             if (this.isWin[i]===true) // 화료 인원 세기
-              cnt_win++;
+              cntWin++;
             if (this.isLose[i]===true) // 방총 인원 세기
-              cnt_lose++;
+              cntLose++;
           }
-          if (cnt_win!==1 && cnt_lose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
+          if (cntWin!==1 && cntLose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
             return {color: 'gray'};
         }
         else{
@@ -325,7 +325,8 @@ export default {
       <graphics kind="dice" :value="diceValue[0]" style="grid-area: dice_1; transform: scale(2);"/>
       <graphics kind="dice" :value="diceValue[1]" style="grid-area: dice_2; transform: scale(2);"/>
       <div class="sum">
-        {{ diceValue[0]+diceValue[1] }}
+        <span v-if="isWall.every(x => x===false)">?</span>
+        <span v-if="isWall.some(x => x===true)">{{ diceValue[0]+diceValue[1] }}</span>
       </div>
       <div v-for="(_, i) in class_dice"
         :key="i"

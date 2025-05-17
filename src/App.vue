@@ -14,7 +14,6 @@ export default {
       winds: ["東", "南", "西", "北"], // 플레이어별 현재 자풍
       scoresHigh: [250, 250, 250, 250], // 플레이어별 현재 점수 (100자리 이상)
       scoresLow: [0, 0, 0, 0], // 플레이어별 현재 점수 (100자리 이하)
-      isEffect: [false, false, false, false], // 플레이어별 점수 변환 이펙트
       scoresEffect: [0, 0, 0, 0], // 플레이어별 이펙트 점수
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
       scoresGap: [0, 0, 0, 0], // 플레이어간 점수 차이
@@ -46,7 +45,7 @@ export default {
   },
   mounted() {
     // 자리 선택 창
-    for (let i=3;i>0;i--){
+    for (let i=3;i>0;i--){ // 자리 섞기
       let j=Math.floor(Math.random()*(i+1));
       [this.randomSeats[i], this.randomSeats[j]]=[this.randomSeats[j], this.randomSeats[i]];
     }
@@ -98,54 +97,51 @@ export default {
     },
     /**바람 및 라운드 변경*/
     changeWindsAndRounds(){
-      let all_winds="東南西北";
+      let allWinds="東南西北";
       let cnt=0;
       this.winds.unshift(this.winds.pop()); // 개인 바람 변경
-      for (let i=0;i<all_winds.length;i++){
-        if (this.currentWind===all_winds[i]) // 현재 라운드 계산
+      for (let i=0;i<allWinds.length;i++){
+        if (this.currentWind===allWinds[i]) // 현재 라운드 계산
           cnt+=i*4;
       }
       cnt+=this.currentRound; // 국 증가
-      this.currentWind=all_winds[Math.floor((cnt%16)/4)]; // 현재 바람 수정
+      this.currentWind=allWinds[Math.floor((cnt%16)/4)]; // 현재 바람 수정
       this.currentRound=cnt%4+1; // 현재 라운드 수정
     },
     /**점수 변동 효과*/
     changeScores(idx){
-      let start_score=this.scoresHigh[idx]*100;
-      let arr=[];
-      for (let i=0;i<50;i++){ // 변경될 점수 사이를 50등분해서 저장
-        arr[i]=start_score+(this.scoresDiff[idx]/50)*(i+1);
-      }
-      this.isEffect[idx]=true;
+      let startScore=this.scoresHigh[idx]*100;
+      let arrCut=[];
+      for (let i=0;i<50;i++) // 변경될 점수 사이를 50등분해서 저장
+        arrCut[i]=startScore+(this.scoresDiff[idx]/50)*(i+1);
       this.scoresEffect[idx]=this.scoresDiff[idx];
       let timecnt=0;
       let repeat=setInterval(() => { // 시간에 따라 반복
-        let x=Math.floor(arr[timecnt]/100), y=Math.abs(arr[timecnt]%100);
+        let x=Math.floor(arrCut[timecnt]/100), y=Math.abs(arrCut[timecnt]%100);
         this.scoresHigh[idx]=x // 100의 자리 변경
         this.scoresLow[idx]=y // 10의자리 변경
         timecnt++;
         if (timecnt>=50){
           clearInterval(repeat);
-          this.isEffect[idx]=false;
-          this.scoresEffect=[0,0,0,0];
+          this.scoresEffect[idx]=0;
         }
       }, 20); // 0.02초 * 50번 = 1초동안 실행
     },
     /**실제 점수계산후 반환*/
     calculateScore(who){
-      let arr_fan= [1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
-      let arr_bu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
-      let arr_score=[2000,3000,3000,4000,4000,4000,6000,6000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
-      let fan=arr_fan[this.inputFan], bu=arr_bu[this.inputBu];
-      let ret=0, chin_score=0, score=0;
+      let arrFan= [1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
+      let arrBu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+      let arrMangan=[2000,3000,3000,4000,4000,4000,6000,6000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
+      let fan=arrFan[this.inputFan], bu=arrBu[this.inputBu];
+      let ret=0, chinScore=0, score=0;
       if ((fan===3 && bu>=70) || (fan===4 && bu>=40)) // 3판 70부, 4판 40부 이상이면 만관
         fan=5;
-      if (((fan===3 && bu>=60) || (fan===4 && bu>=30)) && this.opt_roundmangan) // 절상만관시 3판 60부, 4판 30부 인정
+      if (((fan===3 && bu>=60) || (fan===4 && bu>=30)) && this.optRoundMangan) // 절상만관시 3판 60부, 4판 30부 인정
         fan=5;
       if (5<=fan)
-        chin_score=score=arr_score[fan-5]; // 만관 이상이면 배열 참조
+        chinScore=score=arrMangan[fan-5]; // 만관 이상이면 배열 참조
       else
-        chin_score=score=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
+        chinScore=score=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
       if (this.roundStatus==='ron' || this.roundStatus==='ron_fao'){ // 론일 때
         if (this.winds[this.focusWinner]==='東') // 친이라면 6배
           score*=6;
@@ -155,20 +151,20 @@ export default {
         ret=score;
       }
       else if (this.roundStatus==='tsumo' || this.roundStatus==='tsumo_fao'){ // 쯔모일 때
-        chin_score*=2; // 친이라면 2배
-        chin_score=Math.ceil(chin_score/100)*100;
+        chinScore*=2; // 친이라면 2배
+        chinScore=Math.ceil(chinScore/100)*100;
         score=Math.ceil(score/100)*100;
         if (this.winds[this.focusWinner]==='東'){ // 이긴사람이 친이라면
           if (who===this.focusWinner) // 이겼다면 3배
-            ret=chin_score*3;
+            ret=chinScore*3;
           else // 졌다면 그대로
-            ret=chin_score;
+            ret=chinScore;
         }
         else{ // 이긴사람이 자라면
           if (who===this.focusWinner) // 내가 이겼다면
-            ret=chin_score+score*2;
+            ret=chinScore+score*2;
           else if (this.winds[who]==='東') // 내가 친이라면 
-            ret=chin_score;
+            ret=chinScore;
           else
             ret=score;
         }
@@ -185,7 +181,7 @@ export default {
     hideModal(){
       this.modalType='';
       this.roundStatus='';
-      this.scoresDiff=[0,0,0,0];
+      this.scoresDiff=[0, 0, 0, 0];
       this.focusWinner=-1;
       this.focusLoser=-1;
       this.isFao=false;
@@ -233,7 +229,7 @@ export default {
         this.inputBu=idx;
       }
       else if (status==='fao'){
-        if (this.focusWinner===idx) // 현재 승자와 같을때
+        if (this.focusWinner===idx) // 현재 승자와 같을때 비활성화
           return;
         if (this.focusFao===idx)
           this.focusFao=-1;
@@ -247,34 +243,27 @@ export default {
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
-      let cnt_win=0, cnt_lose=0;
+      let cntWin=0, cntLose=0;
       for (let i=0;i<this.isWin.length;i++){
         if (this.isWin[i]===true) // 화료 인원 세기
-          cnt_win++;
+          cntWin++;
         if (this.isLose[i]===true) // 방총 인원 세기
-          cnt_lose++;
+          cntLose++;
       }
       if (status==='win'){ // 화료일때
-        if (cnt_win===0 || cnt_win===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
+        if (cntWin===0 || cntWin===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
           return -1;
         this.showModal('check_player_lose');
       }
       else if (status==='lose'){ // 방총일때
-        if (cnt_win!==1 && cnt_lose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
+        if (cntWin!==1 && cntLose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
           return;
-        if (!cnt_lose){ // 쯔모
-          for (let i=0;i<this.isWin.length;i++){
-            if (this.isWin[i]===true) // 승자 찾아서 저장
-              this.focusWinner=i;
-          }
+        if (!cntLose){ // 쯔모
+          this.focusWinner=this.isWin.indexOf(true); // 승자 찾아서 저장
           this.showModal('check_score', 'tsumo');
         }
         else{ // 론
-          //다가화 처리하는 코드
-          for (let i=0;i<this.isLose.length;i++){
-            if (this.isLose[i]===true) // 패자 찾아서 저장
-              this.focusLoser=i;
-          }
+          this.focusLoser=this.isLose.indexOf(true); // 패자 찾아서 저장
           for (let i=0;i<this.isWin.length;i++){
             if (this.isWin[(this.focusLoser+i)%4]===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
               this.focusWinner=(this.focusLoser+i)%4;
@@ -323,7 +312,7 @@ export default {
           this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner);
           this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusWinner);
         }
-        if (this.roundStatus==='ron_fao'){ // 책임지불시
+        if (this.roundStatus==='ron_fao'){ // 책임지불시 절반 지불
           this.scoresDiff[this.focusLoser]+=Math.floor(this.calculateScore(this.focusWinner)/2);
           this.scoresDiff[this.focusFao]-=Math.floor(this.calculateScore(this.focusWinner)/2);
         }
@@ -348,17 +337,17 @@ export default {
     },
     /**유국 점수계산*/
     calculateDraw(){
-      let cnt_tenpai=0; // 총 텐파이 인원
+      let cntTenpai=0; // 총 텐파이 인원
       for (let i=0;i<this.isTenpai.length;i++){
         if (this.isTenpai[i]===true) // 텐파이 인원 세기
-          cnt_tenpai++;
+          cntTenpai++;
       }
-      if (0<cnt_tenpai && cnt_tenpai<4){ //올텐파이나 올노텐이 아니라면
+      if (0<cntTenpai && cntTenpai<4){ //올텐파이나 올노텐이 아니라면
         for (let i=0;i<this.isTenpai.length;i++){
           if (this.isTenpai[i]===true) // 텐파이라면
-            this.scoresDiff[i]=3000/cnt_tenpai; // 3000 나눠서 획득
+            this.scoresDiff[i]=3000/cntTenpai; // 3000 나눠서 획득
           else
-            this.scoresDiff[i]=-3000/(this.seats.length-cnt_tenpai); 
+            this.scoresDiff[i]=-3000/(this.seats.length-cntTenpai); 
         }
       }
       this.showModal('show_score', 'normal_draw');
@@ -368,37 +357,23 @@ export default {
       for (let i=0;i<this.isRiichi.length;i++) // 리치봉 수거
         this.isRiichi[i]=false;
       // 옵션에서 롤백한 경우 처리
-      for (let i=0;i<this.scoresDiff.length;i++){ // 점수 배분및 기록
-        if (this.scoresDiff[i]!==0)
-          this.changeScores(i);
-        // 점수 기록창에 점수 기록
-      }
+      for (let i=0;i<this.scoresDiff.length;i++) // 점수 배분및 기록
+        this.changeScores(i);
+      // 점수 기록창에 점수 기록
       // 점수 기록창에 국+본장 기록
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
-        let chk_nowin=false;
-        for (let i=0;i<this.winds.length;i++){
-          if (this.winds[i]==='東' && this.isWin[i]===false){ // 친이 화료했는지 체크
-            chk_nowin=true;
-            break;
-          }
-        }
-        if (chk_nowin){ // 친이 화료를 못했다면
+        let chinWin=this.isWin[this.winds.indexOf('東')]; // 친이 화료했는지 체크
+        if (chinWin===false){ // 친이 화료를 못했다면
           this.changeWindsAndRounds(); // 바람 및 라운드 변경
           this.countRenchan=0; // 연장봉 초기화
         }
-        else
+        else // 연장에 성공했다면
           this.countRenchan++; // 연장봉 추가
         this.countRiichi=0; // 리치봉 초기화
       }
       else if (this.roundStatus==='normal_draw'){ // 일반유국이라면
-        let chk_notenpai=false;
-        for (let i=0;i<this.winds.length;i++){
-          if (this.winds[i]==='東' && this.isTenpai[i]===false){ // 친이 노텐인지 체크
-            chk_notenpai=true;
-            break;
-          } 
-        }
-        if (chk_notenpai) // 친이 노텐이라면
+        let chinTenpai=this.isTenpai[this.winds.indexOf('東')]; // 친이 노텐인지 체크
+        if (chinTenpai===false) // 친이 노텐이라면
           this.changeWindsAndRounds(); // 바람 및 라운드 변경
         this.countRenchan++; // 연장봉 추가
       }
@@ -409,19 +384,19 @@ export default {
     },
     rollDice(){
       let timecnt=0;
+      this.isWall=[false, false, false, false];
       let repeat=setInterval(() => { // 시간에 따라 반복
         this.diceValue[0]=Math.floor(Math.random()*6)+1;
         this.diceValue[1]=Math.floor(Math.random()*6)+1;
-        for (let i=0;i<this.isWall.length;i++){ // 패산 떼는 방향 표시
-          if (i===(this.diceValue[0]+this.diceValue[1]-1)%4)
-            this.isWall[i]=true;
-          else
-            this.isWall[i]=false;
-        }
         timecnt++;
         if (timecnt>=10){
             clearInterval(repeat);
-            //dicesum.style.textDecoration='underline red 3px';
+            for (let i=0;i<this.isWall.length;i++){ // 패산 떼는 방향 표시
+              if (i===(this.diceValue[0]+this.diceValue[1]-1)%4)
+                this.isWall[i]=true;
+              else
+                this.isWall[i]=false;
+            }
         }
       }, 50); // 0.05초 * 10번 = 0.5초동안 실행
     },
@@ -439,7 +414,6 @@ export default {
     :wind="winds[i]"
     :scoreHigh="scoresHigh[i]"
     :scoreLow="scoresLow[i]"
-    :isEffect="isEffect[i]"
     :scoreEffect="scoresEffect[i]"
     :scoreGap="scoresGap[i]"
     :isRiichi="isRiichi[i]"

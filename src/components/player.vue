@@ -9,7 +9,6 @@ export default {
     wind: String,
     scoreHigh: Number,
     scoreLow: Number,
-    isEffect: Boolean,
     scoreEffect: Number,
     scoreGap: Number,
     isRiichi: Boolean,
@@ -58,7 +57,7 @@ export default {
     {{ scoreHigh }}<span style="font-size: 50px;"><span v-if="this.scoreLow<10">0</span>{{ scoreLow }}</span>
   </div>
   <!-- 변경되는 점수 -->
-  <div v-show="isEffect===true" class="change" :style="isDiff()">
+  <div v-show="scoreEffect!==0" class="change" :style="isDiff()">
     <span v-show="scoreEffect>0">+</span>{{ scoreEffect }}
   </div>
 </div>
