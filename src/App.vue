@@ -8,18 +8,18 @@ const isLoading = ref(false);
 
 const fetchGames = () => {
   isLoading.value = true;
-  const url = 'https://boardgamegeek.com/xmlapi2/collection?username=he1fire&stats=1';
+  const url = 'https://boardgamegeek.com/xmlapi2/collection?username=he1fire&stats=1&excludesubtype=boardgameexpansion';
   axios.get(url)
     .then(response => {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(response.data, 'text/xml');
       const items = xmlDoc.getElementsByTagName('item');
       games.value = Array.from(items).map(item => {
+        let noImage='https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__itemrep/img/Py7CTY0tSBSwKQ0sgVjRFfsVUZU=/fit-in/246x300/filters:strip_icc()/pic1657689.jpg';
         return {
           objectid: Number(item.getAttribute('objectid')),
           name: String(item.getElementsByTagName('name')[0].textContent),
-          //thumbnail: ''
-          thumbnail: String(item.getElementsByTagName('thumbnail').length ? item.getElementsByTagName('thumbnail')[0].textContent : ''),
+          thumbnail: String(item.getElementsByTagName('thumbnail').length ? item.getElementsByTagName('thumbnail')[0].textContent : noImage),
         };
       });
       isLoading.value = false;
