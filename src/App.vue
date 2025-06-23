@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios from 'axios';
-import { ref, onMounted } from "vue"
+import { ref } from "vue"
 import type { BoardGame } from './types/types.d';
 
 const games = ref<Array<BoardGame>>([]);
