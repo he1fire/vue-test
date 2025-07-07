@@ -37,9 +37,9 @@ const errorCode = ref('');
 const fetchGames = () => {
   isLoading.value=true;
   //const proxy='https://cors.bridged.cc/';
-  const proxy='https://cors-anywhere.herokuapp.com/';
+  //const proxy='https://cors-anywhere.herokuapp.com/';
   const url=`https://boardgamegeek.com/xmlapi2/collection?username=${userID.value}&stats=1&excludesubtype=boardgameexpansion`;
-  axios.get(proxy+url)
+  axios.get(url)
     .then(response => {
       errorCode.value='';
       const parser=new DOMParser();
@@ -50,9 +50,13 @@ const fetchGames = () => {
       games.value=Array.from(items).map(item => {
         let noImage='https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__itemrep/img/Py7CTY0tSBSwKQ0sgVjRFfsVUZU=/fit-in/246x300/filters:strip_icc()/pic1657689.jpg';
         return {
-          objectid: Number(item.getAttribute('objectid')),
-          name: String(item.getElementsByTagName('name')[0].textContent),
+          // 썸네일 이름 랭크 플레이횟수 내평점 보드게임정보
           thumbnail: String(item.getElementsByTagName('thumbnail').length ? item.getElementsByTagName('thumbnail')[0].textContent : noImage),
+          name: String(item.getElementsByTagName('name')[0].textContent),
+          rank: String(item.getElementsByTagName('rank')[0].getAttribute('value')),
+          numplays: String(item.getElementsByTagName('numplays')[0].textContent),
+          rating: String(item.getElementsByTagName('rating')[0].getAttribute('value')),
+          objectid: Number(item.getAttribute('objectid')),
         };
       });
       isLoading.value = false;
@@ -80,7 +84,10 @@ const fetchGames = () => {
   </div>
   <li v-else v-for="game in games" :key="game.objectid">
     <img v-if="game.thumbnail" :src="game.thumbnail" :alt="game.name" style="max-width: 100px; max-height: 100px;">
-    <span>{{ game.name }}</span>
+    <span>이름 : {{ game.name }} | </span>
+    <span>순위 : {{ game.rank }} | </span>
+    <span>플레이 횟수 : {{ game.numplays }} | </span>
+    <span>내 평점: {{ game.rating }} | </span>
   </li>
 </div>
 </template>
