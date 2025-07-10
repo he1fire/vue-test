@@ -1,8 +1,16 @@
-export interface BoardGame { // 플레이어
+export interface BoardGame { // 보드게임
   thumbnail: string,
   name: string,
   rank: string,
   numplays: string,
   rating: string,
+  objectid: number,
+}
+
+export interface Log { // 로그
+  //thumbnail: string,
+  name: string,
+  date: string,
+  comment: string,
   objectid: number,
 }
