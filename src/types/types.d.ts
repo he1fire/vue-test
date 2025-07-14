@@ -8,8 +8,7 @@ export interface BoardGame { // 보드게임
 }
 
 export interface Log { // 로그
-  //thumbnail: string,
-  name: string,
+  game: BoardGame,
   date: string,
   comment: string,
   objectid: number,

@@ -39,8 +39,8 @@ onMounted(() => {
   isLoading.value=true;
   //const proxy='https://cors.bridged.cc/';
   //const proxy='https://cors-anywhere.herokuapp.com/';
-  let url=`https://boardgamegeek.com/xmlapi2/collection?username=he1fire&stats=1&excludesubtype=boardgameexpansion`;
-  axios.get(url)
+  let collectionurl=`https://boardgamegeek.com/xmlapi2/collection?username=he1fire&stats=1&excludesubtype=boardgameexpansion`;
+  axios.get(collectionurl)
   .then(response => {
     errorCode.value='';
     const parser=new DOMParser();
@@ -60,34 +60,38 @@ onMounted(() => {
       };
     });
     isLoading.value = false;
-  })
-  .catch(error => {
-    console.error('API 요청 실패:', error);
-    errorCode.value='API 요청 실패';
-    isLoading.value=false;
-  });
-  url=`https://boardgamegeek.com/xmlapi2/plays?username=he1fire&page=1`;
-  axios.get(url)
-  .then(response => {
-    errorCode.value='';
-    const parser=new DOMParser();
-    const xmlDoc=parser.parseFromString(response.data, 'text/xml');
-    const plays=xmlDoc.getElementsByTagName('play');
-    if (xmlDoc.getElementsByTagName('error').length>0)
-      errorCode.value=String(xmlDoc.getElementsByTagName('error')[0].getElementsByTagName('message')[0].textContent);
-    logs.value=Array.from(plays).map(play => {
-      return {
-        name: String(play.getElementsByTagName('item')[0].getAttribute('name')),
-        date: String(play.getAttribute('date')),
-        comment: String(play.getElementsByTagName('comments')[0].textContent),
-        objectid: Number(play.getElementsByTagName('item')[0].getAttribute('objectid')),
-      };
+    let logurl=`https://boardgamegeek.com/xmlapi2/plays?username=he1fire&page=1`;
+    axios.get(logurl)
+    .then(response => {
+      errorCode.value='';
+      const parser=new DOMParser();
+      const xmlDoc=parser.parseFromString(response.data, 'text/xml');
+      const plays=xmlDoc.getElementsByTagName('play');
+      if (xmlDoc.getElementsByTagName('error').length>0)
+        errorCode.value=String(xmlDoc.getElementsByTagName('error')[0].getElementsByTagName('message')[0].textContent);
+      logs.value=Array.from(plays).map(play => {
+          const objectid = Number(play.getElementsByTagName('item')[0].getAttribute('objectid'));
+          const game = games.value.find(x => x.objectid === objectid);
+          if (!game) return null; // filter out logs with no matching game
+          return {
+            date: String(play.getAttribute('date')),
+            comment: String(play.getElementsByTagName('comments')[0].textContent),
+            objectid,
+            game
+          };
+        })
+        .filter((log): log is Log => log !== null);
+      isLoading.value = false;
+    }) 
+    .catch(error => {
+      console.error('로그 API 요청 실패:', error);
+      errorCode.value='로그 API 요청 실패';
+      isLoading.value=false;
     });
-    isLoading.value = false;
   })
   .catch(error => {
-    console.error('API 요청 실패:', error);
-    errorCode.value='API 요청 실패';
+    console.error('컬렉션 API 요청 실패:', error);
+    errorCode.value='컬렉션 API 요청 실패';
     isLoading.value=false;
   });
 })
@@ -143,7 +147,7 @@ onMounted(() => {
       {{ errorCode }}
     </div>
     <li v-else v-for="log in logs" :key="log.objectid">
-      <span>이름 : {{ log.name }} | </span>
+      <span>이름 : {{ log.game?.name || '알 수 없음' }} | </span>
       <span>날짜 : {{ log.date }} | </span>
       <div>코멘트 : {{ log.comment }} </div>
     </li>
