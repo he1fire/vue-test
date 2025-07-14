@@ -147,7 +147,8 @@ onMounted(() => {
       {{ errorCode }}
     </div>
     <li v-else v-for="log in logs" :key="log.objectid">
-      <span>이름 : {{ log.game?.name || '알 수 없음' }} | </span>
+      <img v-if="log.game.thumbnail" :src="log.game.thumbnail" :alt="log.game.name" style="max-width: 100px; max-height: 100px;">
+      <span>이름 : {{ log.game.name }} | </span>
       <span>날짜 : {{ log.date }} | </span>
       <div>코멘트 : {{ log.comment }} </div>
     </li>
