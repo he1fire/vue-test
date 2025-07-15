@@ -35,66 +35,73 @@ const errorCode = ref('');
 //   }
 // };
 
-onMounted(() => {
-  isLoading.value=true;
-  //const proxy='https://cors.bridged.cc/';
-  //const proxy='https://cors-anywhere.herokuapp.com/';
-  let collectionurl=`https://boardgamegeek.com/xmlapi2/collection?username=he1fire&stats=1&excludesubtype=boardgameexpansion`;
-  axios.get(collectionurl)
-  .then(response => {
-    errorCode.value='';
-    const parser=new DOMParser();
-    const xmlDoc=parser.parseFromString(response.data, 'text/xml');
-    const items=xmlDoc.getElementsByTagName('item');
-    if (xmlDoc.getElementsByTagName('error').length>0)
-      errorCode.value=String(xmlDoc.getElementsByTagName('error')[0].getElementsByTagName('message')[0].textContent);
-    games.value=Array.from(items).map(item => {
-      let noImage='https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__itemrep/img/Py7CTY0tSBSwKQ0sgVjRFfsVUZU=/fit-in/246x300/filters:strip_icc()/pic1657689.jpg';
+onMounted(async () => {
+  isLoading.value = true;
+  let collectionurl = `https://boardgamegeek.com/xmlapi2/collection?username=he1fire&stats=1&excludesubtype=boardgameexpansion`;
+  try {
+    // 컬렉션 데이터 가져오기
+    const collectionResp = await axios.get(collectionurl);
+    errorCode.value = '';
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(collectionResp.data, 'text/xml');
+    const items = xmlDoc.getElementsByTagName('item');
+    if (xmlDoc.getElementsByTagName('error').length > 0)
+      errorCode.value = String(xmlDoc.getElementsByTagName('error')[0].getElementsByTagName('message')[0].textContent);
+
+    // 모든 게임의 상세정보와 averageweight을 병렬로 가져오기
+    const gamesArray = await Promise.all(Array.from(items).map(async (item) => {
+      let noImage = 'https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__itemrep/img/Py7CTY0tSBSwKQ0sgVjRFfsVUZU=/fit-in/246x300/filters:strip_icc()/pic1657689.jpg';
+      let objectid = Number(item.getAttribute('objectid'));
+      let boardgameurl = `https://boardgamegeek.com/xmlapi2/thing?id=${objectid}&stats=1`;
+      let averageweight = 0;
+      try {
+        const detailResp = await axios.get(boardgameurl);
+        const detailDoc = parser.parseFromString(detailResp.data, 'text/xml');
+        const detailItem = detailDoc.getElementsByTagName('item')[0];
+        averageweight = Number(detailItem.getElementsByTagName('averageweight')[0]?.getAttribute('value') || 0);
+      } catch {
+        averageweight = 0;
+      }
       return {
         thumbnail: String(item.getElementsByTagName('thumbnail').length ? item.getElementsByTagName('thumbnail')[0].textContent : noImage),
         name: String(item.getElementsByTagName('name')[0].textContent),
         rank: String(item.getElementsByTagName('rank')[0].getAttribute('value')),
         numplays: String(item.getElementsByTagName('numplays')[0].textContent),
         rating: String(item.getElementsByTagName('rating')[0].getAttribute('value')),
-        objectid: Number(item.getAttribute('objectid')),
+        objectid,
+        averageweight
       };
-    });
+    }));
+    games.value = gamesArray;
+
+    // 로그 데이터 가져오기
+    let logurl = `https://boardgamegeek.com/xmlapi2/plays?username=he1fire&page=1`;
+    const logResp = await axios.get(logurl);
+    const logDoc = parser.parseFromString(logResp.data, 'text/xml');
+    const plays = logDoc.getElementsByTagName('play');
+    if (logDoc.getElementsByTagName('error').length > 0)
+      errorCode.value = String(logDoc.getElementsByTagName('error')[0].getElementsByTagName('message')[0].textContent);
+
+    logs.value = Array.from(plays).map(play => {
+      const objectid = Number(play.getElementsByTagName('item')[0].getAttribute('objectid'));
+      const game = gamesArray.find(x => x.objectid === objectid);
+      if (!game) return null; // filter out logs with no matching game
+      return {
+        date: String(play.getAttribute('date')),
+        comment: String(play.getElementsByTagName('comments')[0].textContent),
+        objectid,
+        game
+      };
+    }).filter(log => log !== null);
+
     isLoading.value = false;
-    let logurl=`https://boardgamegeek.com/xmlapi2/plays?username=he1fire&page=1`;
-    axios.get(logurl)
-    .then(response => {
-      errorCode.value='';
-      const parser=new DOMParser();
-      const xmlDoc=parser.parseFromString(response.data, 'text/xml');
-      const plays=xmlDoc.getElementsByTagName('play');
-      if (xmlDoc.getElementsByTagName('error').length>0)
-        errorCode.value=String(xmlDoc.getElementsByTagName('error')[0].getElementsByTagName('message')[0].textContent);
-      logs.value=Array.from(plays).map(play => {
-          const objectid = Number(play.getElementsByTagName('item')[0].getAttribute('objectid'));
-          const game = games.value.find(x => x.objectid === objectid);
-          if (!game) return null; // filter out logs with no matching game
-          return {
-            date: String(play.getAttribute('date')),
-            comment: String(play.getElementsByTagName('comments')[0].textContent),
-            objectid,
-            game
-          };
-        })
-        .filter((log): log is Log => log !== null);
-      isLoading.value = false;
-    }) 
-    .catch(error => {
-      console.error('로그 API 요청 실패:', error);
-      errorCode.value='로그 API 요청 실패';
-      isLoading.value=false;
-    });
-  })
-  .catch(error => {
-    console.error('컬렉션 API 요청 실패:', error);
-    errorCode.value='컬렉션 API 요청 실패';
-    isLoading.value=false;
-  });
-})
+  } catch (e) {
+    console.error('API 요청 실패:', e);
+    errorCode.value = 'API 요청 실패';
+    isLoading.value = false;
+  }
+});
+
 /**
   시작화면에서 닉네임 입력
   -> 있으면 다음화면으로 넘어가고 해당 닉네임 경로로 라우팅
@@ -137,6 +144,7 @@ onMounted(() => {
       <img v-if="game.thumbnail" :src="game.thumbnail" :alt="game.name" style="max-width: 100px; max-height: 100px;">
       <span>이름 : {{ game.name }} | </span>
       <span>순위 : {{ game.rank }} | </span>
+      <span>난이도 : {{ game.averageweight }} | </span>
       <span>플레이 횟수 : {{ game.numplays }} | </span>
       <span>내 평점: {{ game.rating }} | </span>
     </li>

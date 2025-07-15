@@ -4,6 +4,7 @@ export interface BoardGame { // 보드게임
   rank: string,
   numplays: string,
   rating: string,
+  averageweight: number,
   objectid: number,
 }
 
